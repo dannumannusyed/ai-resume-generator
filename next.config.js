@@ -1,3 +1,4 @@
+// Deployment trigger with fresh env vars
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
