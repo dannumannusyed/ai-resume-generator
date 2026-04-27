@@ -10,9 +10,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  httpAgentOptions: {
-    keepAlive: true,
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -22,9 +19,8 @@ const nextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['pdf-parse'],
   experimental: {
-    serverComponentsExternalPackages: ['pdf-parse', 'pdfjs-dist'],
+    serverComponentsExternalPackages: ['pdf-parse'],
   },
   headers: async () => {
     return [
