@@ -1,19 +1,28 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('Supabase environment variables are missing! Check your .env or Vercel dashboard.')
+}
 
 // ── Browser / client-side singleton ──────────────────────────────────────────
 // Used in React components and client-side code
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '')
 
 // ── Server-side admin client (bypasses RLS) ───────────────────────────────────
 // Used ONLY in API routes (server-side). Never expose service role key client-side.
 export function createServerSupabaseClient() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl) {
+     throw new Error('NEXT_PUBLIC_SUPABASE_URL is missing')
+  }
+
   if (!serviceRoleKey) {
     // Fall back to anon key if service role key not set
-    return createClient(supabaseUrl, supabaseAnonKey)
+    return createClient(supabaseUrl, supabaseAnonKey || '')
   }
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: {
