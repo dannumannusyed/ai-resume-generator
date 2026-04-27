@@ -1,0 +1,9 @@
+{
+  "name": "AI Resume Generator",
+  "short_name": "AI Resume",
+  "description": "Generate tailored ATS-friendly resumes in minutes",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000"
+}

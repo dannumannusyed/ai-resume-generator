@@ -1,0 +1,180 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+
+  button {
+    @apply transition-all duration-200;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-blue-600 text-white hover:bg-blue-700 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply btn bg-slate-200 text-slate-900 hover:bg-slate-300;
+  }
+
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+  }
+
+  .input {
+    @apply w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-700 mb-2;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply badge bg-green-100 text-green-800;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+
+  .badge-error {
+    @apply badge bg-red-100 text-red-800;
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl font-bold text-slate-900;
+  }
+
+  .section-subheading {
+    @apply text-lg text-slate-600;
+  }
+  /* Premium Utilities */
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)];
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600;
+    background-size: 200% auto;
+    animation: textShimmer 3s linear infinite;
+  }
+}
+
+@keyframes textShimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes shimmer {
+  -100% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.05) 25%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.05) 75%
+  );
+  background-size: 200% center;
+  animation: shimmer 2s infinite;
+}
+
+/* Resume A4 Canvas */
+.resume-canvas {
+  background: white;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .resume-canvas {
+    width: 210mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    display: block !important;
+  }
+
+  /* Prevent elements from breaking across pages if the browser tries to add one */
+  h1, h2, h3, p, li, .prose > * {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .print-hidden,
+  header,
+  nav,
+  footer,
+  .no-print,
+  .btn,
+  .sidebar {
+    display: none !important;
+  }
+
+  /* Force background colors and colors to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+

@@ -1,0 +1,110 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { checkSubscriptionAccess } from '@/lib/subscription-server'
+
+// Simple helper to strip HTML tags from scraped pages
+const extractTextFromHTML = (html: string) =>
+  html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const access = await checkSubscriptionAccess(session.user.id, session.user.email)
+    if (!access.hasAccess) {
+      return NextResponse.json({ 
+        error: 'TRIAL_EXPIRED', 
+        message: 'Your 3-day free trial has expired. Please upgrade to a premium plan to continue using AI analysis features.' 
+      }, { status: 403 })
+    }
+
+    let { jobPosting } = await request.json()
+
+    if (!jobPosting) {
+      return NextResponse.json({ error: 'Job posting is required' }, { status: 400 })
+    }
+
+    if (!process.env.GROQ_API_KEY) {
+      return NextResponse.json({ error: 'GROQ API key is missing' }, { status: 500 })
+    }
+
+    // Detect URL and scrape the actual job page content
+    const urlPattern = /^(https?:\/\/[^\s]+)$/i
+    if (urlPattern.test(jobPosting.trim())) {
+      try {
+        const fetched = await fetch(jobPosting.trim(), {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+        })
+        if (fetched.ok) {
+          const html = await fetched.text()
+          const cleanText = extractTextFromHTML(html)
+          if (cleanText.length > 200) {
+            jobPosting = cleanText
+          }
+        }
+      } catch (err) {
+        console.warn('URL scrape failed, using raw input:', err)
+      }
+    }
+
+    const payload = {
+      model: 'llama-3.1-8b-instant',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a strict ATS Expert. Extract real information from the provided job description and return ONLY valid JSON.
+Do NOT hallucinate. If the text is not a job description, return {"error": "Invalid job description"}.
+
+Required structure:
+{
+  "role": "Exact job title from posting",
+  "requiredSkills": ["real", "hard", "skills", "listed"],
+  "niceToHave": ["bonus", "optional", "skills"],
+  "keywords": ["general", "keywords"],
+  "experience": "Years of experience required",
+  "atsKeywords": ["top 5-7 ATS keywords"]
+}`
+        },
+        {
+          role: 'user',
+          content: `Job Description:\n${jobPosting.substring(0, 8000)}`
+        }
+      ],
+      temperature: 0.1,
+      response_format: { type: 'json_object' }
+    }
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+
+    if (!response.ok) throw new Error(`Groq API returned ${response.status}`)
+
+    const data = await response.json()
+    const parsed = JSON.parse(data.choices[0].message.content.trim())
+
+    if (parsed.error) {
+      return NextResponse.json({ error: parsed.error }, { status: 400 })
+    }
+
+    return NextResponse.json(parsed)
+  } catch (error: any) {
+    console.error('Error analyzing job:', error)
+    return NextResponse.json({ error: error.message || 'Failed to analyze job posting' }, { status: 500 })
+  }
+}

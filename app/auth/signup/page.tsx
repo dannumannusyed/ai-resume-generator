@@ -1,0 +1,218 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Mail, Github, ArrowRight, AlertCircle, CheckCircle, Sparkles } from 'lucide-react'
+import { signIn } from 'next-auth/react'
+
+export default function SignUp() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setSuccess('')
+    setLoading(true)
+
+    try {
+      if (!email || !password || !name) {
+        throw new Error('Please fill in all fields')
+      }
+
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters')
+      }
+
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to sign up')
+      }
+
+      setSuccess('Account created successfully! Signing you in...')
+      
+      // Auto-login after signup
+      const loginResult = await signIn('credentials', {
+        email,
+        password,
+        redirect: false
+      })
+
+      if (loginResult?.error) {
+        setSuccess('')
+        throw new Error('Verification required or account error. Please try logging in.')
+      }
+
+      setTimeout(() => {
+        router.push('/dashboard')
+        router.refresh()
+      }, 1000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleOAuthSignup = (provider: 'github' | 'google') => {
+    signIn(provider, { callbackUrl: '/dashboard' })
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50/30 flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <Link href="/" className="inline-flex items-center gap-2 group">
+            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div className="text-left">
+              <div className="text-2xl font-black text-slate-900 tracking-tight">ResumeMaster</div>
+              <div className="text-xs text-blue-600 font-bold uppercase tracking-widest">AI Career Suite</div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Card */}
+        <div className="glass-card rounded-[2.5rem] p-10 space-y-8 animate-fade-in border-white/40">
+          <div className="text-center">
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h1>
+            <p className="text-slate-500 mt-2 font-medium">Join 10,000+ job seekers today</p>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-start gap-3 animate-slide-in">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-red-800 text-sm font-medium">{error}</p>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {success && (
+            <div className="bg-green-50 border border-green-100 rounded-2xl p-4 flex items-start gap-3 animate-slide-in">
+              <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+              <p className="text-green-800 text-sm font-medium">{success}</p>
+            </div>
+          )}
+
+          {/* Sign Up Form */}
+          <form onSubmit={handleSignUp} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Doe"
+                className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50"
+                required
+              />
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1 ml-1">Minimum 6 characters</p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full h-14 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-xl shadow-blue-200 hover:shadow-blue-300 transition-all disabled:opacity-50"
+            >
+              {loading ? 'Processing...' : 'Build My Resume'}
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white/20 backdrop-blur-sm text-slate-400 font-bold uppercase tracking-widest">Or Secure Link</span>
+            </div>
+          </div>
+
+          {/* Social Sign Up */}
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => handleOAuthSignup('github')}
+              disabled={loading}
+              className="h-14 rounded-2xl border border-slate-200 bg-white/50 hover:bg-white flex items-center justify-center gap-2 transition-all font-bold text-slate-700 disabled:opacity-50"
+            >
+              <Github className="w-5 h-5" />
+              GitHub
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOAuthSignup('google')}
+              disabled={loading}
+              className="h-14 rounded-2xl border border-slate-200 bg-white/50 hover:bg-white flex items-center justify-center gap-2 transition-all font-bold text-slate-700 disabled:opacity-50"
+            >
+              <Mail className="w-5 h-5" />
+              Google
+            </button>
+          </div>
+
+          {/* Login Link */}
+          <p className="text-center text-slate-500 font-medium">
+            Already a member?{' '}
+            <Link href="/auth/login" className="text-blue-600 font-bold hover:underline">
+              Sign In
+            </Link>
+          </p>
+        </div>
+
+        {/* Footer Info */}
+        <div className="mt-8 text-center">
+          <div className="flex items-center justify-center gap-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <span>✓ 3 Free Credits</span>
+            <span>✓ ATS Optimized</span>
+            <span>✓ SSL Secured</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
