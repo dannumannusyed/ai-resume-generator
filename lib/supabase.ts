@@ -17,14 +17,14 @@ export function createServerSupabaseClient() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   
   if (!supabaseUrl) {
-     throw new Error('NEXT_PUBLIC_SUPABASE_URL is missing')
+     console.error('CRITICAL: NEXT_PUBLIC_SUPABASE_URL is missing!')
   }
 
   if (!serviceRoleKey) {
     // Fall back to anon key if service role key not set
-    return createClient(supabaseUrl, supabaseAnonKey || '')
+    return createClient(supabaseUrl || '', supabaseAnonKey || '')
   }
-  return createClient(supabaseUrl, serviceRoleKey, {
+  return createClient(supabaseUrl || '', serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
