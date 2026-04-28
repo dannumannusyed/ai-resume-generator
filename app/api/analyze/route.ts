@@ -43,29 +43,27 @@ export async function POST(req: NextRequest) {
     const urlPattern = /^(https?:\/\/[^\s]+)$/i;
     if (urlPattern.test(jobPosting.trim())) {
       try {
-        console.log("Analyzing URL:", jobPosting);
+        console.log("Analyzing URL with Jina:", jobPosting);
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
 
-        const fetched = await fetch(jobPosting.trim(), {
+        const fetched = await fetch(`https://r.jina.ai/${jobPosting.trim()}`, {
           headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Cache-Control': 'max-age=0',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'text/plain'
           },
           signal: controller.signal
         });
         clearTimeout(timeoutId);
+        
         if (fetched.ok) {
-          const html = await fetched.text();
-          const cleanText = extractTextFromHTML(html);
-          if (cleanText.length > 100) {
-            jobPosting = cleanText.substring(0, 8000);
+          const markdown = await fetched.text();
+          if (markdown.length > 100) {
+            jobPosting = markdown.substring(0, 8000);
           }
         }
       } catch (err) {
-        console.warn("Failed to scrape URL, continuing with raw input.", err);
+        console.warn("Failed to scrape URL with Jina, continuing with raw input.", err);
       }
     }
 

@@ -44,22 +44,26 @@ export async function POST(request: NextRequest) {
     if (urlPattern.test(jobPosting.trim())) {
       try {
         const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 5000) // 5s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 8000) // 8s timeout for Jina
 
-        const fetched = await fetch(jobPosting.trim(), {
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+        // Use Jina AI Reader to bypass bot protection and get clean markdown
+        const fetched = await fetch(`https://r.jina.ai/${jobPosting.trim()}`, {
+          headers: { 
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept': 'text/plain' 
+          },
           signal: controller.signal
         })
         clearTimeout(timeoutId)
+        
         if (fetched.ok) {
-          const html = await fetched.text()
-          const cleanText = extractTextFromHTML(html)
-          if (cleanText.length > 200) {
-            jobPosting = cleanText
+          const markdown = await fetched.text()
+          if (markdown.length > 200) {
+            jobPosting = markdown
           }
         }
       } catch (err) {
-        console.warn('URL scrape failed, using raw input:', err)
+        console.warn('Jina URL scrape failed, using raw input:', err)
       }
     }
 
