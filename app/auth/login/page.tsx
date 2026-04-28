@@ -13,8 +13,18 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleOAuthLogin = (provider: 'github' | 'google') => {
-    signIn(provider, { callbackUrl: '/dashboard' })
+  const handleOAuthLogin = async (provider: 'github' | 'google') => {
+    try {
+      console.log(`Attempting ${provider} login...`)
+      const result = await signIn(provider, { 
+        callbackUrl: '/dashboard',
+        redirect: true 
+      })
+      console.log(`${provider} login result:`, result)
+    } catch (err) {
+      console.error(`${provider} login failed:`, err)
+      alert(`Social login failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    }
   }
 
   const handleLogin = async (e: React.FormEvent) => {

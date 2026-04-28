@@ -67,8 +67,18 @@ export default function SignUp() {
     }
   }
 
-  const handleOAuthSignup = (provider: 'github' | 'google') => {
-    signIn(provider, { callbackUrl: '/dashboard' })
+  const handleOAuthSignup = async (provider: 'github' | 'google') => {
+    try {
+      console.log(`Attempting ${provider} signup...`)
+      const result = await signIn(provider, { 
+        callbackUrl: '/dashboard',
+        redirect: true 
+      })
+      console.log(`${provider} signup result:`, result)
+    } catch (err) {
+      console.error(`${provider} signup failed:`, err)
+      alert(`Social signup failed: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    }
   }
 
   return (
