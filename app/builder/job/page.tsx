@@ -32,8 +32,8 @@ export default function JobAnalyzer() {
 
       const json = await response.json()
 
-      if (!response.ok || json.error) {
-        throw new Error(json.error || 'Failed to analyze job posting')
+      if (!response.ok || (json.error && !json.data)) {
+        throw new Error(json.error || json.message || 'Failed to analyze job posting')
       }
 
       setAnalysis(json.data)

@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { checkSubscriptionAccess } from '@/lib/subscription-server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(_req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)

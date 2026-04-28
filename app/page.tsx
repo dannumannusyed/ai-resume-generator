@@ -27,7 +27,7 @@ export default function Home() {
         router.push('/builder/resume')
       } else {
         const err = await response.json()
-        alert(err.error || 'Failed to analyze job')
+        alert(err.error || err.message || 'Failed to analyze job')
       }
     } catch (error) {
       console.error('Analysis failed:', error)

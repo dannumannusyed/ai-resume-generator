@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+export const maxDuration = 60 // 60 seconds timeout
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { checkSubscriptionAccess } from '@/lib/subscription-server'
@@ -43,14 +44,19 @@ export async function POST(req: NextRequest) {
     if (urlPattern.test(jobPosting.trim())) {
       try {
         console.log("Analyzing URL:", jobPosting);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
         const fetched = await fetch(jobPosting.trim(), {
           headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'Accept-Language': 'en-US,en;q=0.5',
             'Cache-Control': 'max-age=0',
-          }
+          },
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
         if (fetched.ok) {
           const html = await fetched.text();
           const cleanText = extractTextFromHTML(html);

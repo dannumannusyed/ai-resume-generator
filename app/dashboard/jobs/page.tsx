@@ -42,7 +42,7 @@ export default function JobMatching() {
       const data = await response.json()
       
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to analyze job matches')
+        throw new Error(data.error || data.message || 'Failed to analyze job matches')
       }
 
       setJobs(data.jobs || [])

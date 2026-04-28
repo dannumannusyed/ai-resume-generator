@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
-
+export const maxDuration = 60 // 60 seconds timeout
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { checkSubscriptionAccess } from '@/lib/subscription-server'
@@ -43,9 +43,14 @@ export async function POST(request: NextRequest) {
     const urlPattern = /^(https?:\/\/[^\s]+)$/i
     if (urlPattern.test(jobPosting.trim())) {
       try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 5000) // 5s timeout
+
         const fetched = await fetch(jobPosting.trim(), {
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+          signal: controller.signal
         })
+        clearTimeout(timeoutId)
         if (fetched.ok) {
           const html = await fetched.text()
           const cleanText = extractTextFromHTML(html)
