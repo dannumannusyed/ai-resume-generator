@@ -17,16 +17,16 @@ const extractTextFromHTML = (html: string) =>
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const access = await checkSubscriptionAccess(session.user.id, session.user.email)
-    if (!access.hasAccess) {
-      return NextResponse.json({ 
-        error: 'TRIAL_EXPIRED', 
-        message: 'Your 3-day free trial has expired. Please upgrade to a premium plan to continue using AI analysis features.' 
-      }, { status: 403 })
+    
+    // Check access only if logged in, otherwise allow public trial
+    if (session?.user?.id) {
+      const access = await checkSubscriptionAccess(session.user.id, session.user.email)
+      if (!access.hasAccess) {
+        return NextResponse.json({ 
+          error: 'TRIAL_EXPIRED', 
+          message: 'Your 3-day free trial has expired. Please upgrade to a premium plan to continue using AI analysis features.' 
+        }, { status: 403 })
+      }
     }
 
     let { jobPosting } = await request.json()

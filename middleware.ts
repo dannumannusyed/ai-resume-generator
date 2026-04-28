@@ -34,7 +34,6 @@ export const config = {
     '/api/generate-resume(.*)',
     '/api/generate-cover-letter(.*)',
     '/api/analyze(.*)',
-    '/api/analyze-job(.*)',
     '/api/career-path(.*)',
     '/api/interview-prep(.*)',
     '/api/job-matching(.*)',
