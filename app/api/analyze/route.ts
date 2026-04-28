@@ -75,12 +75,11 @@ export async function POST(req: NextRequest) {
         {
           role: "system",
           content: `You are an expert ATS (Applicant Tracking System) analyst. Extract job details from whatever text is provided and return ONLY valid JSON.
-Even if the text is messy or scraped from a website, do your best to identify and extract the job-related information.
-Only return {"error": "Invalid job description"} if the text is completely unrelated to any job (e.g., only contains navigation menus or error pages).
+If the text is just a URL (e.g. because scraping failed), extract as much information as you can from the URL slug (e.g. role, company, location, experience) and make educated guesses for common skills related to that role. DO NOT return an error. ALWAYS return a valid JSON matching the required structure.
 
 Required JSON structure:
 {
-  "role": "Extracted Job Title",
+  "role": "Extracted Job Title from posting or URL",
   "requiredSkills": ["hard skills like 'Python', 'React', 'SQL'"],
   "niceToHave": ["soft or bonus skills"],
   "keywords": ["general keywords like 'agile', 'remote', 'startup'"],

@@ -69,11 +69,11 @@ export async function POST(request: NextRequest) {
         {
           role: 'system',
           content: `You are a strict ATS Expert. Extract real information from the provided job description and return ONLY valid JSON.
-Do NOT hallucinate. If the text is not a job description, return {"error": "Invalid job description"}.
+If the text is just a URL (e.g. because scraping failed), extract as much information as you can from the URL slug (e.g. role, company, location, experience) and make educated guesses for common skills related to that role. DO NOT return an error. ALWAYS return a valid JSON matching the required structure.
 
 Required structure:
 {
-  "role": "Exact job title from posting",
+  "role": "Exact job title from posting or URL",
   "requiredSkills": ["real", "hard", "skills", "listed"],
   "niceToHave": ["bonus", "optional", "skills"],
   "keywords": ["general", "keywords"],
