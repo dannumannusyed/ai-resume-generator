@@ -2,9 +2,8 @@ import React from 'react'
 import TemplateClassic from './TemplateClassic'
 import TemplateExecutive from './TemplateExecutive'
 import TemplateMinimalist from './TemplateMinimalist'
-import TemplateModern from './TemplateModern'
 
-export type TemplateType = 'classic' | 'executive' | 'minimalist' | 'modern' | 'creative'
+export type TemplateType = 'classic' | 'executive' | 'minimalist'
 
 interface ResumeDocumentProps {
   content: string
@@ -43,8 +42,6 @@ export default function ResumeDocument({ content, template, isTrial = false }: R
           {template === 'classic' && <TemplateClassic content={content} />}
           {template === 'executive' && <TemplateExecutive content={content} />}
           {template === 'minimalist' && <TemplateMinimalist content={content} />}
-          {template === 'modern' && <TemplateModern content={content} />}
-          {template === 'creative' && <TemplateCreative content={content} />}
         </div>
       </div>
     </div>
