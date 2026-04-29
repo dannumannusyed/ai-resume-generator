@@ -56,16 +56,14 @@ export default function SkillGap() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-6 w-full h-full flex flex-col">
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2 flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Target className="w-6 h-6 text-orange-600" />
-            </div>
-            Skill Gap Analysis
-          </h1>
-          <p className="text-slate-500">Find exactly what skills you're missing to land your target role, with actionable learning steps.</p>
-        </div>
+      <div className="mb-10">
+        <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-2 flex items-center gap-4">
+          <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center shadow-sm">
+            <Target className="w-6 h-6 text-orange-600" />
+          </div>
+          Skill Gap Analysis
+        </h1>
+        <p className="text-slate-500 font-medium italic">Find exactly what skills you're missing to land your target role.</p>
       </div>
 
       {/* Main Content Grid */}

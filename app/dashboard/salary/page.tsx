@@ -58,16 +58,14 @@ export default function SalaryNegotiation() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-6 w-full h-full flex flex-col">
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2 flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-green-600" />
-            </div>
-            Salary Negotiation Assistant
-          </h1>
-          <p className="text-slate-500">Get an AI-powered salary negotiation strategy based on your skills and target role.</p>
-        </div>
+      <div className="mb-10">
+        <h1 className="text-4xl font-black tracking-tight text-slate-900 mb-2 flex items-center gap-4">
+          <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center shadow-sm">
+            <DollarSign className="w-6 h-6 text-green-600" />
+          </div>
+          Salary Negotiation Assistant
+        </h1>
+        <p className="text-slate-500 font-medium italic">Get an AI-powered salary negotiation strategy based on your skills and target role.</p>
       </div>
 
       {/* Main Content Grid */}

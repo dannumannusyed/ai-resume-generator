@@ -11,6 +11,8 @@ const templates = [
   { id: 'classic', name: 'Classic', icon: '📄', description: 'Traditional & Clean', primaryColor: 'slate' },
   { id: 'executive', name: 'Executive', icon: '💎', description: 'High-Trust & Sidebar', primaryColor: 'blue' },
   { id: 'minimalist', name: 'Minimalist', icon: '☁️', description: 'Elegant Whitespace', primaryColor: 'indigo' },
+  { id: 'modern', name: 'Modern', icon: '🚀', description: 'Dynamic & Bold', primaryColor: 'cyan' },
+  { id: 'creative', name: 'Creative', icon: '🎨', description: 'Visual & Unique', primaryColor: 'pink' },
 ]
 
 export default function TemplateStep({ selectedTemplate, setTemplate }: TemplateStepProps) {

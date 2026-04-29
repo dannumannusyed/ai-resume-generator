@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 export default function Pricing() {
+  const { data: session } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -56,6 +58,10 @@ export default function Pricing() {
   }
 
   const handleRazorpayCheckout = async (plan: any) => {
+    if (!session) {
+      router.push('/auth/login?callbackUrl=/pricing')
+      return
+    }
     setLoading(true)
     const res = await loadRazorpay()
 
@@ -159,12 +165,12 @@ export default function Pricing() {
           {plans.map((plan, i) => (
             <div
               key={i}
-              className={`card p-8 flex flex-col ${
-                plan.highlighted ? 'ring-2 ring-blue-600 transform md:scale-105' : ''
+              className={`card p-8 flex flex-col relative ${
+                plan.highlighted ? 'ring-2 ring-blue-600 transform md:scale-105 z-10' : ''
               }`}
             >
               {plan.highlighted && (
-                <div className="mb-4 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold inline-block w-fit">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 bg-blue-600 text-white rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
                   Most Popular
                 </div>
               )}

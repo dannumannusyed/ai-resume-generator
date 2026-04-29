@@ -9,8 +9,8 @@ export function Navbar() {
   const { data: session } = useSession()
   const pathname = usePathname()
 
-  // Hide Navbar completely on auth pages for a cleaner interface
-  if (pathname?.startsWith('/auth')) {
+  // Hide Navbar completely on app-specific pages for a cleaner interface
+  if (pathname?.startsWith('/auth') || pathname?.startsWith('/dashboard') || pathname?.startsWith('/builder') || pathname?.startsWith('/settings') || pathname?.startsWith('/trial')) {
     return null
   }
 

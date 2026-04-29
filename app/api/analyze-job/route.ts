@@ -16,7 +16,12 @@ const extractTextFromHTML = (html: string) =>
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    let session = null
+    try {
+      session = await getServerSession(authOptions)
+    } catch (e) {
+      console.warn('NextAuth session check failed (likely missing NEXTAUTH_SECRET):', e)
+    }
     
     // Check access only if logged in, otherwise allow public trial
     if (session?.user?.id) {

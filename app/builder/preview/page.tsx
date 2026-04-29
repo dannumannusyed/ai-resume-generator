@@ -527,7 +527,7 @@ export default function ResumePreview() {
                   Template
                 </p>
                 <div className="grid grid-cols-1 gap-2">
-                  {(['classic', 'executive', 'minimalist'] as TemplateType[]).map(t => (
+                  {(['classic', 'executive', 'minimalist', 'modern', 'creative'] as TemplateType[]).map(t => (
                     <button
                       key={t}
                       onClick={() => handleTemplateChange(t)}

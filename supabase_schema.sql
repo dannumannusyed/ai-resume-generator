@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS public.resumes (
   ats_score INTEGER DEFAULT 0,
   job_role TEXT, -- The target job role
   is_tailored BOOLEAN DEFAULT FALSE,
+  template TEXT DEFAULT 'classic',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -38,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.subscriptions (
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
   plan TEXT CHECK (plan IN ('trial', 'weekly', 'monthly', 'lifetime')) DEFAULT 'trial',
   status TEXT CHECK (status IN ('active', 'expired', 'cancelled')) DEFAULT 'active',
+  razorpay_order_id TEXT,
   razorpay_payment_id TEXT,
   current_period_end TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -91,13 +93,13 @@ BEGIN
     NEW.raw_user_meta_data->>'last_name'
   );
   
-  -- Also create a trial subscription
+  -- 2. Create subscription (Default to none, forced trial onboarding)
   INSERT INTO public.subscriptions (user_id, plan, status, current_period_end)
   VALUES (
     NEW.id,
-    'trial',
-    'active',
-    NOW() + INTERVAL '3 days'
+    'none',
+    'inactive',
+    NOW()
   );
   
   RETURN NEW;

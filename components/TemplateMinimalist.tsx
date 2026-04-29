@@ -7,23 +7,25 @@ interface TemplateProps {
 
 export default function TemplateMinimalist({ content }: TemplateProps) {
   return (
-    <div className="bg-white h-full w-full shadow-lg print:shadow-none font-light py-12 px-16 text-slate-700 overflow-hidden">
+    <div className="bg-white min-h-[297mm] w-full shadow-2xl print:shadow-none font-sans py-20 px-24 text-slate-700 overflow-hidden">
       <div className="prose prose-slate max-w-none 
-        prose-h1:text-center prose-h1:text-4xl prose-h1:font-extralight prose-h1:tracking-[0.1em] prose-h1:mb-2 prose-h1:text-slate-900
-        prose-h2:text-center prose-h2:text-[10px] prose-h2:uppercase prose-h2:tracking-[0.4em] prose-h2:font-bold prose-h2:text-slate-400 prose-h2:mt-12 prose-h2:mb-6 prose-h2:border-none
-        prose-h3:text-slate-800 prose-h3:text-sm prose-h3:font-bold prose-h3:mt-6 prose-h3:mb-1 prose-h3:uppercase prose-h3:tracking-widest
-        prose-p:text-slate-500 prose-p:text-center prose-p:text-xs prose-p:my-1
-        [&>p:not(:first-of-type)]:text-left [&>p:not(:first-of-type)]:text-sm
-        prose-li:text-slate-500 prose-li:text-sm prose-li:my-1
-        prose-strong:text-slate-800 prose-strong:font-medium">
+        prose-h1:text-center prose-h1:text-5xl prose-h1:font-thin prose-h1:tracking-[0.15em] prose-h1:mb-4 prose-h1:text-slate-900 prose-h1:uppercase
+        prose-p:text-slate-500 prose-p:text-center prose-p:text-[9pt] prose-p:tracking-[0.1em] prose-p:uppercase prose-p:my-2 prose-p:font-medium
+        [&>p:not(:first-of-type)]:text-left [&>p:not(:first-of-type)]:text-[10pt] [&>p:not(:first-of-type)]:lowercase-none [&>p:not(:first-of-type)]:tracking-normal [&>p:not(:first-of-type)]:font-normal [&>p:not(:first-of-type)]:text-slate-600
+        prose-h2:text-center prose-h2:text-[8pt] prose-h2:uppercase prose-h2:tracking-[0.5em] prose-h2:font-black prose-h2:text-slate-300 prose-h2:mt-16 prose-h2:mb-8 prose-h2:border-none
+        prose-h3:text-slate-900 prose-h3:text-[11pt] prose-h3:font-black prose-h3:mt-8 prose-h3:mb-2 prose-h3:uppercase prose-h3:tracking-widest
+        prose-li:text-slate-600 prose-li:text-[10pt] prose-li:my-2 prose-li:leading-relaxed
+        prose-strong:text-slate-900 prose-strong:font-bold
+        prose-ul:list-none prose-ul:pl-0
+        prose-li:pl-0">
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
 
-      {/* Adding a subtle footline */}
-      <div className="mt-20 border-t border-slate-100 pt-8 flex justify-center opacity-30">
-        <div className="w-1 h-1 bg-slate-300 rounded-full mx-2" />
-        <div className="w-1 h-1 bg-slate-300 rounded-full mx-2" />
-        <div className="w-1 h-1 bg-slate-300 rounded-full mx-2" />
+      {/* Footer detail */}
+      <div className="mt-32 flex items-center justify-center gap-4 opacity-20">
+        <div className="h-[1px] w-12 bg-slate-400" />
+        <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+        <div className="h-[1px] w-12 bg-slate-400" />
       </div>
     </div>
   )

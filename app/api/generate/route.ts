@@ -5,7 +5,13 @@ import { checkSubscriptionAccess } from '@/lib/subscription-server'
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    let session = null
+    try {
+      session = await getServerSession(authOptions)
+    } catch (e) {
+      console.warn('NextAuth session check failed:', e)
+    }
+    
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

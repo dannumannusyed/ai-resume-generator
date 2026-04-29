@@ -4,15 +4,24 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Zap, CheckCircle2, BarChart3, Download, Sparkles, X } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
   const router = useRouter()
   const [showDemo, setShowDemo] = useState(false)
   const [jobText, setJobText] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const { data: session } = useSession()
 
   const handleAnalyze = async () => {
     if (!jobText.trim()) return
+
+    if (!session) {
+      localStorage.setItem('pending_job_text', jobText)
+      router.push('/auth/signup')
+      return
+    }
+
     setIsAnalyzing(true)
     try {
       const response = await fetch('/api/analyze-job', {
@@ -26,8 +35,14 @@ export default function Home() {
         localStorage.setItem('current_job_analysis', JSON.stringify(data))
         router.push('/builder/resume')
       } else {
-        const err = await response.json()
-        alert(err.error || err.message || 'Failed to analyze job')
+        const text = await response.text()
+        try {
+          const err = JSON.parse(text)
+          alert(err.error || err.message || 'Failed to analyze job')
+        } catch (e) {
+          console.error("Server returned non-JSON error:", text)
+          alert(`Server Error (${response.status}). Please check Vercel logs or Environment Variables.`)
+        }
       }
     } catch (error) {
       console.error('Analysis failed:', error)

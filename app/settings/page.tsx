@@ -1,16 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { ArrowLeft, User, CreditCard, Bell, Shield, LogOut } from 'lucide-react'
 
 export default function Settings() {
+  const { data: session } = useSession()
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com'
+    firstName: '',
+    lastName: '',
+    email: ''
   })
+
+  useEffect(() => {
+    if (session?.user) {
+      const nameParts = (session.user.name || '').split(' ')
+      setProfile({
+        firstName: nameParts[0] || '',
+        lastName: nameParts.slice(1).join(' ') || '',
+        email: session.user.email || ''
+      })
+    }
+  }, [session])
 
   const [marketingEmails, setMarketingEmails] = useState(true)
 

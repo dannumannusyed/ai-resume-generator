@@ -16,7 +16,13 @@ const extractTextFromHTML = (html: string) => {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    let session = null
+    try {
+      session = await getServerSession(authOptions)
+    } catch (e) {
+      console.warn('NextAuth session check failed (likely missing NEXTAUTH_SECRET):', e)
+    }
+    
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

@@ -15,10 +15,10 @@ export const PRICING_PLANS = [
   {
     id: 'free',
     name: '3-Day Trial',
-    price: '0 Rs',
-    priceAmount: 0,
+    price: '1 Rs',
+    priceAmount: 1,
     resumes: 'Unlimited',
-    features: ['3 Days Full Access', 'AI Resume Tailoring', 'Job Analysis', 'Watermarked Preview'],
+    features: ['3 Days Full Access', 'AI Resume Tailoring', 'Job Analysis', 'Autopay Verification (Refundable)'],
   },
   {
     id: 'weekly',

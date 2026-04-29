@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'ResumeMaster',
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
 }
 
 import { Navbar } from '@/components/Navbar'

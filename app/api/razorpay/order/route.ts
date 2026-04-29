@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const order = await razorpay.orders.create(options) as any
+    console.log('[RAZORPAY ORDER CREATED]:', order.id)
 
     return NextResponse.json({
       id: order.id,
@@ -51,7 +52,10 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Razorpay order error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to create order' },
+      { 
+        error: error.message || 'Failed to create order',
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
       { status: 500 }
     )
   }

@@ -27,19 +27,6 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/builder/:path*',
-    '/profile/:path*',
-    '/api/resumes/:path*',
-    '/api/user/:path*',
-    '/api/generate(.*)',
-    '/api/generate-resume(.*)',
-    '/api/generate-cover-letter(.*)',
-    '/api/analyze(.*)',
-    '/api/career-path(.*)',
-    '/api/interview-prep(.*)',
-    '/api/job-matching(.*)',
-    '/api/optimize-linkedin(.*)',
-    '/api/parse-resume(.*)',
-    '/api/salary-negotiation(.*)',
-    '/api/skill-gap(.*)'
+    '/profile/:path*'
   ],
 }

@@ -43,7 +43,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ data: resumes })
   } catch (error: any) {
     console.error('GET /api/resumes error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch resumes', details: error },
+      { status: 500 }
+    )
   }
 }
 
@@ -86,7 +89,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ data: resume })
   } catch (error: any) {
     console.error('POST /api/resumes error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { error: error.message || 'Failed to save resume', details: error },
+      { status: 500 }
+    )
   }
 }
 

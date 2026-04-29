@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Mail, ArrowRight, AlertCircle, CheckCircle, Sparkles } from 'lucide-react'
+import { Mail, ArrowRight, AlertCircle, CheckCircle, Sparkles, User, Lock } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 
 export default function SignUp() {
@@ -128,38 +128,47 @@ export default function SignUp() {
           <form onSubmit={handleSignUp} className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="John Doe"
+                  className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50 pl-11"
+                  required
+                />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50 pl-11"
+                  required
+                />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 ml-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input h-14 bg-white/50 border-slate-200/60 rounded-2xl focus:ring-4 focus:ring-blue-100/50 pl-11"
+                  required
+                />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              </div>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1 ml-1">Minimum 6 characters</p>
             </div>
 
@@ -200,7 +209,7 @@ export default function SignUp() {
               disabled={loading}
               className="h-14 rounded-2xl border border-slate-200 bg-white/50 hover:bg-white flex items-center justify-center gap-2 transition-all font-bold text-slate-700 disabled:opacity-50"
             >
-              <Mail className="w-5 h-5" />
+              <Mail className="w-5 h-5 text-red-500" />
               Google
             </button>
           </div>

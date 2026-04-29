@@ -4,7 +4,7 @@ import TemplateExecutive from './TemplateExecutive'
 import TemplateMinimalist from './TemplateMinimalist'
 import TemplateModern from './TemplateModern'
 
-export type TemplateType = 'classic' | 'executive' | 'minimalist'
+export type TemplateType = 'classic' | 'executive' | 'minimalist' | 'modern' | 'creative'
 
 interface ResumeDocumentProps {
   content: string
@@ -15,7 +15,7 @@ interface ResumeDocumentProps {
 export default function ResumeDocument({ content, template, isTrial = false }: ResumeDocumentProps) {
   return (
     <div className={`resume-canvas-wrapper flex justify-center py-8 bg-slate-200/50 min-h-screen overflow-auto print:p-0 print:bg-white print:block ${isTrial ? 'select-none' : ''}`}>
-      <div className="resume-canvas shadow-2xl print:shadow-none mb-12 print:mb-0 w-[210mm] h-[297mm] max-h-[297mm] overflow-hidden bg-white relative">
+      <div className="resume-canvas shadow-2xl print:shadow-none mb-12 print:mb-0 w-[210mm] min-h-[297mm] bg-white relative">
         {isTrial && (
           <>
             {/* watermark overlay */}
@@ -43,6 +43,8 @@ export default function ResumeDocument({ content, template, isTrial = false }: R
           {template === 'classic' && <TemplateClassic content={content} />}
           {template === 'executive' && <TemplateExecutive content={content} />}
           {template === 'minimalist' && <TemplateMinimalist content={content} />}
+          {template === 'modern' && <TemplateModern content={content} />}
+          {template === 'creative' && <TemplateCreative content={content} />}
         </div>
       </div>
     </div>
