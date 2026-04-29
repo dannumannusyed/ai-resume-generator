@@ -18,7 +18,7 @@ export default function BuilderLayout({ children }: { children: React.ReactNode 
         if (res.ok) {
           const { data } = await res.json()
           if (!data || data.plan_id === 'none') {
-            router.push('/pricing')
+            router.push('/trial')
             return
           }
         }

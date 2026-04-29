@@ -6,12 +6,38 @@ import { usePathname } from 'next/navigation'
 import {
   FileText, Briefcase, Settings, Menu, X, Sparkles
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { FEATURE_FLAGS } from '@/lib/config'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { data: session } = useSession()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null)
+  const [checkingAccess, setCheckingAccess] = useState(true)
+
+  useEffect(() => {
+    async function checkAccess() {
+      if (!session) return
+      try {
+        const res = await fetch('/api/user/subscription')
+        if (res.ok) {
+          const { data } = await res.json()
+          if (!data || !data.has_access) {
+            router.push('/trial')
+            return
+          }
+        }
+      } catch (err) {
+        console.error('Dashboard Access Check Error:', err)
+      } finally {
+        setCheckingAccess(false)
+      }
+    }
+    checkAccess()
+  }, [session, router])
 
   useEffect(() => {
     let trialStart = localStorage.getItem('trialStartDate')
@@ -48,6 +74,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard', label: 'Resumes', subtitle: 'Manage documents', icon: FileText },
     { href: '/dashboard/jobs', label: 'Job Matches', subtitle: 'Analyze postings', icon: Briefcase },
   ]
+
+  if (checkingAccess && session) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">

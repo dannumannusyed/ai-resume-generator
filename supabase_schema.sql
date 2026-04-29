@@ -37,14 +37,20 @@ CREATE TABLE IF NOT EXISTS public.resumes (
 CREATE TABLE IF NOT EXISTS public.subscriptions (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
-  plan TEXT CHECK (plan IN ('none', 'trial', 'weekly', 'monthly', 'lifetime')) DEFAULT 'none',
-  status TEXT CHECK (status IN ('inactive', 'active', 'expired', 'cancelled')) DEFAULT 'inactive',
+  plan TEXT DEFAULT 'none',
+  status TEXT DEFAULT 'inactive',
   razorpay_order_id TEXT,
   razorpay_payment_id TEXT,
   current_period_end TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Ensure constraints exist (safe for both new and existing tables)
+ALTER TABLE public.subscriptions DROP CONSTRAINT IF EXISTS subscriptions_plan_check;
+ALTER TABLE public.subscriptions ADD CONSTRAINT subscriptions_plan_check CHECK (plan IN ('none', 'trial', 'weekly', 'monthly', 'lifetime'));
+ALTER TABLE public.subscriptions DROP CONSTRAINT IF EXISTS subscriptions_status_check;
+ALTER TABLE public.subscriptions ADD CONSTRAINT subscriptions_status_check CHECK (status IN ('inactive', 'active', 'expired', 'cancelled'));
 
 -- ============================================
 -- ROW LEVEL SECURITY (RLS)
@@ -53,6 +59,15 @@ CREATE TABLE IF NOT EXISTS public.subscriptions (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.resumes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- Fix: Drop existing policies before creating them to avoid errors
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can view own resumes" ON public.resumes;
+DROP POLICY IF EXISTS "Users can insert own resumes" ON public.resumes;
+DROP POLICY IF EXISTS "Users can update own resumes" ON public.resumes;
+DROP POLICY IF EXISTS "Users can delete own resumes" ON public.resumes;
+DROP POLICY IF EXISTS "Users can view own subscription" ON public.subscriptions;
 
 -- Profiles: users can only read/update their own profile
 CREATE POLICY "Users can view own profile" ON public.profiles
@@ -124,12 +139,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_resumes_updated_at ON public.resumes;
 CREATE TRIGGER update_resumes_updated_at BEFORE UPDATE ON public.resumes
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON public.subscriptions;
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON public.subscriptions
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 

@@ -57,7 +57,7 @@ export default function SignUp() {
       }
 
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push('/trial')
         router.refresh()
       }, 1000)
     } catch (err) {
@@ -71,7 +71,7 @@ export default function SignUp() {
     try {
       console.log(`Attempting ${provider} signup...`)
       const result = await signIn(provider, { 
-        callbackUrl: '/dashboard',
+        callbackUrl: '/trial',
         redirect: true 
       })
       console.log(`${provider} signup result:`, result)

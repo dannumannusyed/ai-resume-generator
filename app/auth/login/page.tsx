@@ -17,7 +17,7 @@ export default function Login() {
     try {
       setLoading(true)
       await signIn(provider, { 
-        callbackUrl: '/dashboard',
+        callbackUrl: '/trial',
         redirect: true 
       })
     } catch (err) {
@@ -52,7 +52,7 @@ export default function Login() {
         }
       }
 
-      router.push('/dashboard')
+      router.push('/trial')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred during login')
