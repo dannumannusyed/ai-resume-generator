@@ -25,10 +25,15 @@ export default function SkillsStep({
           rows={6}
           value={skillsText}
           onChange={(e) => {
-            setSkillsText(e.target.value)
+            const val = e.target.value
+            setSkillsText(val)
+            
+            // Treat both commas and spaces as separators
+            const skillList = val.split(/[,\s]+/).map(s => s.trim()).filter(Boolean)
+            
             setResumeData({
               ...resumeData, 
-              skills: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+              skills: skillList
             })
           }}
           placeholder="React, TypeScript, AWS, Project Management..."

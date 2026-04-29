@@ -33,7 +33,14 @@ export default function ResumeBuilder() {
   const [suggestedSkills, setSuggestedSkills] = useState<string[]>([])
 
   useEffect(() => {
-    setSkillsText(resumeData.skills.join(', '))
+    // Only update skillsText if the actual skills array has changed in a meaningful way
+    // This prevents stripping trailing commas or spaces while the user is typing
+    const currentSkills = skillsText.split(/[,\s]+/).map(s => s.trim()).filter(Boolean)
+    const storeSkills = resumeData.skills.map((s: string) => s.trim()).filter(Boolean)
+    
+    if (JSON.stringify(currentSkills) !== JSON.stringify(storeSkills)) {
+      setSkillsText(resumeData.skills.join(', '))
+    }
   }, [resumeData.skills])
 
   useEffect(() => {

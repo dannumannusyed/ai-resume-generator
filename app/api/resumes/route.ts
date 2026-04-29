@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { name, content, resumeData, atsScore, jobRole, isTailored, template } = body
 
+    console.log('[SAVE RESUME]: User ID:', session.user.id, 'Data Name:', name)
+
     if (!content) {
       return NextResponse.json({ error: 'content is required' }, { status: 400 })
     }
@@ -84,7 +86,10 @@ export async function POST(req: NextRequest) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('[DATABASE ERROR]: Failed to insert resume:', error)
+      throw error
+    }
 
     return NextResponse.json({ data: resume })
   } catch (error: any) {

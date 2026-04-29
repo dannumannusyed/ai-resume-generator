@@ -28,7 +28,7 @@ export default function TemplateExecutive({ content }: TemplateProps) {
   const mainMarkdown = mainSections.join('\n')
 
   return (
-    <div className="bg-white min-h-[297mm] w-full shadow-2xl print:shadow-none flex overflow-hidden font-sans">
+    <div className="bg-white h-full w-full shadow-2xl print:shadow-none flex overflow-hidden font-sans">
       {/* Sidebar */}
       <div className="w-[220pt] bg-slate-900 px-10 py-16 text-white flex flex-col shrink-0">
         <div className="mb-12 border-b border-slate-700 pb-8">

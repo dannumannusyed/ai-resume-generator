@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS public.resumes (
 CREATE TABLE IF NOT EXISTS public.subscriptions (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
-  plan TEXT CHECK (plan IN ('trial', 'weekly', 'monthly', 'lifetime')) DEFAULT 'trial',
-  status TEXT CHECK (status IN ('active', 'expired', 'cancelled')) DEFAULT 'active',
+  plan TEXT CHECK (plan IN ('none', 'trial', 'weekly', 'monthly', 'lifetime')) DEFAULT 'none',
+  status TEXT CHECK (status IN ('inactive', 'active', 'expired', 'cancelled')) DEFAULT 'inactive',
   razorpay_order_id TEXT,
   razorpay_payment_id TEXT,
   current_period_end TIMESTAMPTZ,
