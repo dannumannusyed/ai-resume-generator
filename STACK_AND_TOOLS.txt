@@ -1,0 +1,46 @@
+STACK & TOOLS - AI RESUME GENERATOR
+
+CORE LANGUAGES & FRAMEWORKS
+---------------------------
+- TypeScript: End-to-end type safety for complex resume data.
+- Next.js 14 (App Router): Full-stack framework for performance, SEO, and unified logic.
+- React 18: Powers the interactive builder and real-time previews.
+- Tailwind CSS: Modern, rapid styling for premium aesthetics.
+
+AI INTELLIGENCE
+---------------
+- Groq (Llama 3.3 70B): Ultra-fast inference for instant resume tailoring.
+- Google Gemini 1.5 Pro: Deep reasoning and complex content analysis.
+- Jina AI: High-fidelity web scraping for job postings.
+
+BACKEND & INFRASTRUCTURE
+------------------------
+- Supabase (PostgreSQL): Secure data storage and real-time user profiles.
+- NextAuth.js: Robust authentication with Google and magic links.
+- Vercel: Global hosting and seamless deployment.
+- Zustand: Lightweight state management for the resume builder.
+
+PAYMENTS
+--------
+- Razorpay: Trusted payment gateway for trials, autopay, and subscriptions.
+
+SPECIALIZED LIBRARIES
+---------------------
+- jsPDF: High-quality, client-side PDF generation.
+- Lucide React: Professional icon set.
+- React Markdown: Renders AI feedback in clean formats.
+- Zod: Strict data validation and schema management.
+
+SOFTWARE & DEV TOOLS
+--------------------
+- Antigravity: Advanced AI Coding Assistant by Google Deepmind (Architect & Debugger).
+- VS Code: Primary code editor.
+- Node.js & npm: Backend runtime and package management.
+- Git & GitHub: Version control and collaboration.
+- Docker: Local environment consistency.
+- Windows 11: Primary Development OS.
+- PowerShell: Task automation and command-line control.
+
+WHY THIS STACK?
+---------------
+Built for speed and scale. By combining Groq's lightning-fast AI with Next.js's robust framework and Supabase's secure backend, we've created a premium, intelligent career partner.

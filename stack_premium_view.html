@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Stack | Official Manifesto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #fcfcfc;
+            --bg-card: #ffffff;
+            --accent-primary: #111111;
+            --accent-blue: #0052ff;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border: #eeeeee;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            --hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 60px 20px;
+        }
+
+        .wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .manifesto-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 80px 60px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .logo-mark {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 20px;
+            background: var(--accent-primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #fff;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .category-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .tool-box {
+            margin-bottom: 30px;
+            padding: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tool-box:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .tool-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--accent-primary);
+        }
+
+        .tool-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-bottom: 1.5px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .link-button:hover {
+            border-color: var(--accent-blue);
+            gap: 10px;
+        }
+
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            padding-top: 40px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer b { color: var(--accent-primary); }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body { padding: 30px 15px; }
+            .manifesto-container { padding: 50px 25px; border-radius: 30px; }
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1rem; }
+            .grid-layout { grid-template-columns: 1fr; gap: 20px; }
+            .tool-box { padding: 20px; margin-bottom: 20px; border-radius: 20px; }
+            .tool-title { font-size: 1.2rem; }
+            header { margin-bottom: 50px; }
+            .category-label { margin-top: 30px !important; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="manifesto-container">
+        <header>
+            <div class="logo-mark">AM</div>
+            <h1>Tools & Stack</h1>
+            <p class="subtitle">An overview of the state-of-the-art technologies used in the creation of the AI Resume Builder.</p>
+        </header>
+
+        <div class="grid-layout">
+            <div class="column">
+                <div class="category-label">Core Architecture</div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">Next.js 14</div>
+                    <p class="tool-description">High-performance React framework for the modern web.</p>
+                    <a href="https://nextjs.org/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="tool-box">
+                    <div class="tool-title">TypeScript</div>
+                    <p class="tool-description">Strictly typed JavaScript for industrial reliability.</p>
+                    <a href="https://www.typescriptlang.org/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="tool-box">
+                    <div class="tool-title">Tailwind CSS</div>
+                    <p class="tool-description">Utility-first design system for custom UI engineering.</p>
+                    <a href="https://tailwindcss.com/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="category-label" style="margin-top: 40px;">AI Intelligence</div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">Groq (Llama 3)</div>
+                    <p class="tool-description">The world's fastest AI inference engine.</p>
+                    <a href="https://groq.com/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="tool-box">
+                    <div class="tool-title">Google Gemini</div>
+                    <p class="tool-description">Advanced multimodal reasoning and analysis.</p>
+                    <a href="https://deepmind.google/technologies/gemini/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="category-label">Systems & Cloud</div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">Supabase</div>
+                    <p class="tool-description">PostgreSQL database with real-time capabilities.</p>
+                    <a href="https://supabase.com/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="tool-box">
+                    <div class="tool-title">Vercel</div>
+                    <p class="tool-description">Deployment platform for global scale and speed.</p>
+                    <a href="https://vercel.com/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="tool-box">
+                    <div class="tool-title">Razorpay</div>
+                    <p class="tool-description">Standard-setting payment infrastructure.</p>
+                    <a href="https://razorpay.com/" target="_blank" class="link-button">Official Site →</a>
+                </div>
+
+                <div class="category-label" style="margin-top: 40px;">Engineering Tools</div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">VS Code</div>
+                    <p class="tool-description">The ultimate editor for software development.</p>
+                    <a href="https://code.visualstudio.com/" target="_blank" class="link-button">Download →</a>
+                </div>
+
+                <div class="tool-box">
+                    <div class="tool-title">Antigravity AI</div>
+                    <p class="tool-description">Agentic AI partner from Google Deepmind.</p>
+                    <a href="#" class="link-button">Internal Access →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Designed and Built by <b>Antigravity AI</b> for the <b>ResumeMaster</b> project</p>
+            <p style="margin-top: 10px; font-size: 0.75rem; opacity: 0.5;">© 2026 Public Release Documentation</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
