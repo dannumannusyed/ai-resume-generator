@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [isAnalyzingPending, setIsAnalyzingPending] = useState(false)
   const [showExpiredModal, setShowExpiredModal] = useState(false)
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null)
+  const [isPaidUser, setIsPaidUser] = useState(false)
 
   useEffect(() => {
     async function loadResumes() {
@@ -80,6 +81,10 @@ export default function Dashboard() {
   }, [session, router])
 
   useEffect(() => {
+    const isPaid = localStorage.getItem('is_paid_user') === 'true'
+    setIsPaidUser(isPaid)
+    if (isPaid) return // Don't run timer or show expired modal for paid users
+
     let trialStart = localStorage.getItem('trialStartDate')
     if (!trialStart) {
       trialStart = Date.now().toString()
@@ -136,7 +141,7 @@ export default function Dashboard() {
 
       <DashboardHeader userName={session?.user?.name || ''} />
 
-      <TrialBanner timeLeft={timeLeft} />
+      {!isPaidUser && <TrialBanner timeLeft={timeLeft} />}
 
       <div className="mb-8 flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -192,7 +197,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {showExpiredModal && (
+      {!isPaidUser && showExpiredModal && (
         <TrialExpiredModal onClose={() => setShowExpiredModal(false)} />
       )}
     </div>

@@ -17,6 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null)
   const [checkingAccess, setCheckingAccess] = useState(true)
+  const [isTrialUser, setIsTrialUser] = useState(true)
 
   useEffect(() => {
     async function checkAccess() {
@@ -29,6 +30,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             router.push('/trial')
             return
           }
+          setIsTrialUser(data.is_trial)
+          if (!data.is_trial) {
+            localStorage.setItem('is_paid_user', 'true')
+          }
         }
       } catch (err) {
         console.error('Dashboard Access Check Error:', err)
@@ -40,6 +45,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [session, router])
 
   useEffect(() => {
+    if (!isTrialUser) return // Don't run timer for paid users
+
     let trialStart = localStorage.getItem('trialStartDate')
     if (!trialStart) {
       trialStart = Date.now().toString()
@@ -68,7 +75,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     calculateTimeLeft()
     const timer = setInterval(calculateTimeLeft, 1000)
     return () => clearInterval(timer)
-  }, [])
+  }, [isTrialUser])
 
   const navLinks = [
     { href: '/dashboard', label: 'Resumes', subtitle: 'Manage documents', icon: FileText },
@@ -171,13 +178,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
-            <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-blue-50/50 rounded-xl border border-blue-100 shadow-inner">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-              <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Trial Ending in</span>
-              <span className="text-sm text-blue-900 font-bold tracking-tight">
-                {timeLeft ? `${timeLeft.days}d ${timeLeft.hours}h` : '...'}
-              </span>
-            </div>
+            {isTrialUser && (
+              <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-blue-50/50 rounded-xl border border-blue-100 shadow-inner">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Trial Ending in</span>
+                <span className="text-sm text-blue-900 font-bold tracking-tight">
+                  {timeLeft ? `${timeLeft.days}d ${timeLeft.hours}h` : '...'}
+                </span>
+              </div>
+            )}
             <Link href="/pricing" className="btn-primary text-sm py-2.5 px-4 md:px-6 shadow-lg shadow-blue-100 hover:shadow-blue-200 transition-all font-bold rounded-xl whitespace-nowrap">
               Upgrade Pro
             </Link>
