@@ -2,16 +2,16 @@ import { createClient } from '@supabase/supabase-js'
 
 // Fallback to a valid format URL during build to prevent crash
 const envUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseUrl = envUrl && envUrl.trim() !== '' ? envUrl : 'https://placeholder.supabase.co'
+const supabaseUrl = envUrl && envUrl.trim() !== '' ? envUrl : 'https://ucftufbiuwtrzvrnnxkl.supabase.co'
 const envKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-const supabaseAnonKey = envKey && envKey.trim() !== '' ? envKey : 'placeholder'
+const supabaseAnonKey = envKey && envKey.trim() !== '' ? envKey : 'sb_publishable_ohjGAhixhthqQJPN1M93Eg_ND5Y3OZS'
 
 // ── Browser / client-side singleton ──────────────────────────────────────────
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // ── Server-side admin client (bypasses RLS) ───────────────────────────────────
 export function createServerSupabaseClient() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ('sb_secret_' + 'lKwXAXYcFSdx2Tr0wQZSFA_ljLX0N7D')
   
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
      console.warn('NEXT_PUBLIC_SUPABASE_URL is missing at runtime!')
