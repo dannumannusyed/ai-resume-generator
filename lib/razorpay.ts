@@ -1,17 +1,13 @@
 import Razorpay from 'razorpay'
 
-// Use fallbacks for build time to prevent crashes
-const key_id = process.env.RAZORPAY_KEY_ID || 'rzp_test_placeholder'
-const key_secret = process.env.RAZORPAY_KEY_SECRET || 'placeholder_secret'
+if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  throw new Error('[RAZORPAY] RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are not set in .env.local! Payment will not work.')
+}
 
 export const razorpay = new Razorpay({
-  key_id: key_id,
-  key_secret: key_secret,
+  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_live_SjS0jSJuQTeuj1',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || 'tyUkPYIB1ZK4OiQ8Do3bXXWb',
 })
-
-if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-  console.warn('RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are missing! Payment features will not work.')
-}
 
 export async function createRazorpayOrder(amount: number, currency: string = 'INR', receipt: string) {
   const options = {
