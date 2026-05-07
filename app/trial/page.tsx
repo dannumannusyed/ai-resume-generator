@@ -63,7 +63,7 @@ export default function TrialGate() {
       if (orderData.error) throw new Error(orderData.error)
 
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_live_SjS0jSJuQTeuj1',
+        key: 'rzp_live_SjS0jSJuQTeuj1',
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'ResumeMaster',
