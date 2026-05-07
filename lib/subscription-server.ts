@@ -7,6 +7,7 @@ export type SubscriptionStatus = {
   plan: string
   status: string
   error?: string
+  currentPeriodEnd?: string
 }
 
 /**
@@ -59,8 +60,9 @@ export async function checkSubscriptionAccess(
 
   return {
     hasAccess: isActive,
-    isTrial: subscription.plan === 'trial',
+    isTrial: subscription.plan === 'trial' || subscription.plan === 'free',
     plan: subscription.plan,
-    status: isActive ? 'active' : 'expired'
+    status: isActive ? 'active' : 'expired',
+    currentPeriodEnd: subscription.current_period_end
   }
 }

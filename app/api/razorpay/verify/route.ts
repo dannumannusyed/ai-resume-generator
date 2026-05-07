@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     // Verify signature
     const text = razorpay_order_id + '|' + razorpay_payment_id
     const generated_signature = crypto
-      .createHmac('sha256', 'tyUkPYIB1ZK4OiQ8Do3bXXWb')
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
       .update(text)
       .digest('hex')
 
@@ -60,7 +60,6 @@ export async function POST(req: NextRequest) {
       .from('subscriptions')
       .upsert({
         user_id: userId,
-        razorpay_order_id,
         razorpay_payment_id,
         status: 'active',
         plan: planId,

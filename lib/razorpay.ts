@@ -5,8 +5,8 @@ if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
 }
 
 export const razorpay = new Razorpay({
-  key_id: 'rzp_live_SjS0jSJuQTeuj1',
-  key_secret: 'tyUkPYIB1ZK4OiQ8Do3bXXWb',
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
 })
 
 export async function createRazorpayOrder(amount: number, currency: string = 'INR', receipt: string) {

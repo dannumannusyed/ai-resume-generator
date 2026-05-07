@@ -8,9 +8,11 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get('x-razorpay-signature')
     
     // In production, you would ideally use a separate WEBHOOK_SECRET. 
-    // Here we use the key secret to match standard Razorpay webhook setups if they share the same secret.
     // It is highly recommended to set a specific WEBHOOK_SECRET in Razorpay Dashboard.
-    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET || 'tyUkPYIB1ZK4OiQ8Do3bXXWb'
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET
+    if (!webhookSecret) {
+      return NextResponse.json({ error: 'Webhook secret is not configured' }, { status: 500 })
+    }
 
     if (!signature) {
       return NextResponse.json({ error: 'Missing signature' }, { status: 400 })
@@ -53,7 +55,6 @@ export async function POST(req: NextRequest) {
           .from('subscriptions')
           .upsert({
             user_id: userId,
-            razorpay_order_id: paymentEntity.order_id || null,
             razorpay_payment_id: paymentEntity.id || null,
             status: 'active',
             plan: planId,

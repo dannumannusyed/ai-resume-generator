@@ -92,7 +92,7 @@ export default function Pricing() {
 
       // 2. Open Razorpay Checkout
       const options = {
-        key: 'rzp_live_SjS0jSJuQTeuj1', // Enter the Key ID generated from the Dashboard
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'ResumeMaster',

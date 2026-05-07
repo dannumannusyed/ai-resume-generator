@@ -81,39 +81,53 @@ export default function Dashboard() {
   }, [session, router])
 
   useEffect(() => {
-    const isPaid = localStorage.getItem('is_paid_user') === 'true'
-    setIsPaidUser(isPaid)
-    if (isPaid) return // Don't run timer or show expired modal for paid users
+    async function checkAccess() {
+      if (!session) return
+      try {
+        const res = await fetch('/api/user/subscription')
+        if (res.ok) {
+          const { data } = await res.json()
+          setIsPaidUser(!data.is_trial)
+          
+          if (data.is_trial && data.current_period_end) {
+            const expiryDate = new Date(data.current_period_end).getTime()
+            
+            const calculateTimeLeft = () => {
+              const now = Date.now()
+              const difference = expiryDate - now
 
-    let trialStart = localStorage.getItem('trialStartDate')
-    if (!trialStart) {
-      trialStart = Date.now().toString()
-      localStorage.setItem('trialStartDate', trialStart)
-    }
-    
-    const trialDurationMs = 3 * 24 * 60 * 60 * 1000 // 3 Days
-    const expiryDate = parseInt(trialStart) + trialDurationMs
+              if (difference > 0) {
+                setTimeLeft({
+                  days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                  hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                  minutes: Math.floor((difference / 1000 / 60) % 60),
+                  seconds: Math.floor((difference / 1000) % 60)
+                })
+              } else {
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+                setShowExpiredModal(true)
+                return true // expired
+              }
+              return false
+            }
 
-    const timer = setInterval(() => {
-      const now = Date.now()
-      const difference = expiryDate - now
-
-      if (difference > 0) {
-        setTimeLeft({
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60)
-        })
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-        setShowExpiredModal(true)
-        clearInterval(timer)
+            const expired = calculateTimeLeft()
+            if (!expired) {
+              const timer = setInterval(() => {
+                if (calculateTimeLeft()) {
+                  clearInterval(timer)
+                }
+              }, 1000)
+              // Cleanup isn't perfect here due to async effect, but ok for component lifespan
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to check access in page:', err)
       }
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [])
+    }
+    checkAccess()
+  }, [session])
 
   const handleDelete = async (id: string) => {
     try {

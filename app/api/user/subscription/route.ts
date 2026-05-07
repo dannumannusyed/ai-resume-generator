@@ -19,7 +19,8 @@ export async function GET(_req: NextRequest) {
         plan_id: access.plan,
         status: access.status,
         has_access: access.hasAccess,
-        is_trial: access.isTrial
+        is_trial: access.isTrial,
+        current_period_end: access.currentPeriodEnd
       }
     })
   } catch (error: any) {

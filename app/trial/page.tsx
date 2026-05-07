@@ -17,8 +17,13 @@ export default function TrialGate() {
         const res = await fetch('/api/user/subscription')
         if (res.ok) {
           const { data } = await res.json()
-          if (data && data.plan_id !== 'none' && data.status === 'active') {
-            router.push('/dashboard')
+          if (data && data.plan_id !== 'none') {
+            if (data.status === 'active') {
+              router.push('/dashboard')
+            } else {
+              // If they already had a plan (trial or paid) but it expired, they must buy a full plan
+              router.push('/pricing')
+            }
           }
         }
       } catch (e) {
@@ -56,14 +61,14 @@ export default function TrialGate() {
       const orderRes = await fetch('/api/razorpay/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId: 'free' }),
+        body: JSON.stringify({ planId: 'trial' }),
       })
 
       const orderData = await orderRes.json()
       if (orderData.error) throw new Error(orderData.error)
 
       const options = {
-        key: 'rzp_live_SjS0jSJuQTeuj1',
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'ResumeMaster',
@@ -78,7 +83,7 @@ export default function TrialGate() {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                planId: 'free'
+                planId: 'trial'
               })
             })
 

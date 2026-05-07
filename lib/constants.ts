@@ -1,6 +1,6 @@
 export const APP_NAME = 'ResumeMaster'
 export const APP_DESCRIPTION = 'AI-Powered Resume Generator'
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '')
 
 export const NAV_ITEMS = [
   { href: '/', label: 'Home' },
@@ -13,7 +13,7 @@ export const NAV_ITEMS = [
 
 export const PRICING_PLANS = [
   {
-    id: 'free',
+    id: 'trial',
     name: '3-Day Trial',
     price: '1 Rs',
     priceAmount: 1,

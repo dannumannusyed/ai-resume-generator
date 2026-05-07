@@ -18,6 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null)
   const [checkingAccess, setCheckingAccess] = useState(true)
   const [isTrialUser, setIsTrialUser] = useState(true)
+  const [trialExpiryDate, setTrialExpiryDate] = useState<number | null>(null)
 
   useEffect(() => {
     async function checkAccess() {
@@ -27,11 +28,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         if (res.ok) {
           const { data } = await res.json()
           if (!data || !data.has_access) {
-            router.push('/trial')
+            // If they previously had a plan (trial or paid) and it expired, send them to pricing.
+            // Only send completely new users (plan_id === 'none') to the trial gate.
+            if (data && data.plan_id !== 'none') {
+              router.push('/pricing')
+            } else {
+              router.push('/trial')
+            }
             return
           }
           setIsTrialUser(data.is_trial)
-          if (!data.is_trial) {
+          if (data.is_trial && data.current_period_end) {
+            setTrialExpiryDate(new Date(data.current_period_end).getTime())
+          } else if (!data.is_trial) {
             localStorage.setItem('is_paid_user', 'true')
           }
         }
@@ -45,20 +54,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [session, router])
 
   useEffect(() => {
-    if (!isTrialUser) return // Don't run timer for paid users
-
-    let trialStart = localStorage.getItem('trialStartDate')
-    if (!trialStart) {
-      trialStart = Date.now().toString()
-      localStorage.setItem('trialStartDate', trialStart)
-    }
-    
-    const trialDurationMs = 3 * 24 * 60 * 60 * 1000 // 3 Days
-    const expiryDate = parseInt(trialStart) + trialDurationMs
+    if (!isTrialUser || !trialExpiryDate) return // Don't run timer for paid users or without expiry
 
     const calculateTimeLeft = () => {
       const now = Date.now()
-      const difference = expiryDate - now
+      const difference = trialExpiryDate - now
 
       if (difference > 0) {
         setTimeLeft({
@@ -75,7 +75,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     calculateTimeLeft()
     const timer = setInterval(calculateTimeLeft, 1000)
     return () => clearInterval(timer)
-  }, [isTrialUser])
+  }, [isTrialUser, trialExpiryDate])
 
   const navLinks = [
     { href: '/dashboard', label: 'Resumes', subtitle: 'Manage documents', icon: FileText },
