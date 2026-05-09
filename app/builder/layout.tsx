@@ -21,6 +21,10 @@ export default function BuilderLayout({ children }: { children: React.ReactNode 
             router.push('/trial')
             return
           }
+          if (!data.has_access) {
+            router.push('/pricing')
+            return
+          }
         }
       } catch (err) {
         console.error('Builder Access Check Error:', err)

@@ -178,7 +178,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
-            {isTrialUser && (
+            {isTrialUser ? (
               <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-blue-50/50 rounded-xl border border-blue-100 shadow-inner">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                 <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Trial Ending in</span>
@@ -186,10 +186,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   {timeLeft ? `${timeLeft.days}d ${timeLeft.hours}h` : '...'}
                 </span>
               </div>
+            ) : (
+              <Link href="/pricing" className="btn-primary text-sm py-2.5 px-4 md:px-6 shadow-lg shadow-blue-100 hover:shadow-blue-200 transition-all font-bold rounded-xl whitespace-nowrap">
+                Upgrade Pro
+              </Link>
             )}
-            <Link href="/pricing" className="btn-primary text-sm py-2.5 px-4 md:px-6 shadow-lg shadow-blue-100 hover:shadow-blue-200 transition-all font-bold rounded-xl whitespace-nowrap">
-              Upgrade Pro
-            </Link>
           </div>
         </header>
         <div className="flex-1 overflow-y-auto w-full bg-slate-50/30">

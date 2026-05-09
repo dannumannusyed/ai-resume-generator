@@ -125,9 +125,9 @@ export default function ResumePreview() {
         const res = await fetch('/api/user/subscription')
         if (res.ok) {
           const { data } = await res.json()
-          // Only remove trial restrictions if they have a non-trial plan (pro, premium, admin, etc.)
-          const isPaid = data && (data.plan_id === 'monthly' || data.plan_id === 'lifetime' || data.plan_id === 'admin')
-          setIsTrial(!isPaid)
+          // Remove trial restrictions if they have an active plan or active trial (has_access is true)
+          const hasAccess = data && data.has_access === true
+          setIsTrial(!hasAccess)
         }
       } catch (err) {
         console.error('Sub check fail:', err)
