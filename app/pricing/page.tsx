@@ -147,16 +147,16 @@ export default function Pricing() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-20 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-20 px-6 sm:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="section-heading mb-4 text-5xl">Simple, Transparent Pricing</h1>
-          <p className="section-subheading text-xl">Start your carrier with AI-powered resume tailoring</p>
+          <p className="section-subheading text-lg sm:text-xl">Start your career with AI-powered resume tailoring</p>
           
           {/* Trial Banner */}
-          <div className="mt-8 inline-block bg-blue-100 border border-blue-300 rounded-lg px-6 py-3">
-            <p className="text-blue-900 font-semibold">✨ Try it free for 3 days! Unrestricted access after starting trial (Autopay enabled).</p>
+          <div className="mt-8 inline-block bg-blue-100 border border-blue-300 rounded-lg px-4 py-3 sm:px-6">
+            <p className="text-blue-900 font-semibold text-sm sm:text-base">✨ Try it free for 3 days! Unrestricted access after starting trial (Autopay enabled).</p>
           </div>
         </div>
 

@@ -56,7 +56,7 @@ export default function Home() {
       {/* Navigation moved to global Layout */}
 
       {/* Hero Section */}
-      <section className="relative pt-16 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="relative pt-16 pb-20 px-6 sm:px-6 lg:px-8 overflow-hidden">
         {/* Animated Background Elements */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-400/10 rounded-full blur-3xl animate-pulse delay-700" />
@@ -77,17 +77,17 @@ export default function Home() {
               Stop sending generic resumes. Our AI analyzes job descriptions in seconds and crafts a high-performing, ATS-optimized version of your experience.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-sm mx-auto sm:max-w-none">
               <Link
                 href="/auth/signup"
-                className="btn-primary text-lg px-10 py-5 rounded-2xl shadow-2xl shadow-blue-200 hover:shadow-blue-300 transition-all flex items-center gap-3"
+                className="btn-primary text-lg px-8 py-4 sm:px-10 sm:py-5 rounded-2xl shadow-2xl shadow-blue-200 hover:shadow-blue-300 transition-all flex items-center justify-center gap-3 w-full sm:w-auto"
               >
                 Start Free Trial
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <button 
                 onClick={() => setShowDemo(true)}
-                className="btn-ghost text-lg px-8 py-5 rounded-2xl border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-all"
+                className="btn-ghost text-lg px-8 py-4 sm:px-8 sm:py-5 rounded-2xl border border-slate-200 hover:border-blue-400 hover:text-blue-600 transition-all w-full sm:w-auto"
               >
                 Watch Demo
               </button>
@@ -95,9 +95,9 @@ export default function Home() {
           </div>
 
           {/* Interactive Job Analyzer Mockup */}
-          <div className="max-w-4xl mx-auto group">
+          <div className="max-w-4xl mx-auto group px-2 sm:px-0">
             <div className="glass-card p-2 rounded-[2rem] border-white/50">
-              <div className="bg-slate-50/50 rounded-[1.5rem] p-6 sm:p-10">
+              <div className="bg-slate-50/50 rounded-[1.5rem] p-4 sm:p-10">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg">
                     <BarChart3 className="w-6 h-6" />
@@ -113,15 +113,15 @@ export default function Home() {
                     value={jobText}
                     onChange={(e) => setJobText(e.target.value)}
                     placeholder="Paste the job description here..."
-                    className="w-full h-40 bg-white border border-slate-200 rounded-2xl p-6 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-slate-700 resize-none shadow-inner"
+                    className="w-full h-40 bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all text-slate-700 resize-none shadow-inner"
                   />
                   <button
                     onClick={handleAnalyze}
                     disabled={isAnalyzing || !jobText.trim()}
-                    className="absolute bottom-4 right-4 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-600 transition-all shadow-lg disabled:opacity-50"
+                    className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-slate-900 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-600 transition-all shadow-lg disabled:opacity-50 text-sm sm:text-base"
                   >
                     {isAnalyzing ? (
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
                         Analyze Job
@@ -137,7 +137,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <section id="features" className="py-20 px-6 sm:px-6 lg:px-8 bg-slate-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="section-heading mb-4">Why ResumeMaster?</h2>
@@ -215,7 +215,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-6 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="section-heading text-center mb-16">How It Works</h2>
 
@@ -239,7 +239,7 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <section id="pricing" className="py-20 px-6 sm:px-6 lg:px-8 bg-slate-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="section-heading mb-4">Simple Pricing</h2>
@@ -288,7 +288,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-6 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-12 text-white">
           <h2 className="text-4xl font-bold mb-4">Ready to Land Your Dream Job?</h2>
           <p className="text-lg text-blue-100 mb-8">
@@ -302,7 +302,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-slate-900 text-slate-400 py-12 px-6 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>

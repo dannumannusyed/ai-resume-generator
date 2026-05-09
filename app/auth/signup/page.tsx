@@ -82,7 +82,7 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50/30 flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50/30 flex items-center justify-center px-6 py-6 sm:py-12 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -102,7 +102,7 @@ export default function SignUp() {
         </div>
 
         {/* Card */}
-        <div className="glass-card rounded-[2.5rem] p-10 space-y-8 animate-fade-in border-white/40">
+        <div className="glass-card rounded-[2.5rem] p-6 sm:p-10 space-y-8 animate-fade-in border-white/40">
           <div className="text-center">
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h1>
             <p className="text-slate-500 mt-2 font-medium">Join 10,000+ job seekers today</p>

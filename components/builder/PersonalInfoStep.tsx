@@ -141,7 +141,7 @@ export default function PersonalInfoStep({
             <button
               key={domain}
               type="button"
-              className="text-[10px] font-bold uppercase px-3 py-1.5 bg-white text-slate-500 border border-slate-200 rounded-lg hover:border-blue-200 hover:text-blue-600 transition-all"
+              className="text-xs sm:text-[10px] font-bold uppercase px-4 py-2 sm:px-3 sm:py-1.5 bg-white text-slate-500 border border-slate-200 rounded-lg hover:border-blue-200 hover:text-blue-600 transition-all"
               onClick={() => {
                 const prefix = resumeData.personalInfo.email.split('@')[0] || ''
                 setResumeData({
