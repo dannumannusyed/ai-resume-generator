@@ -147,20 +147,20 @@ export default function ResumeBuilder() {
   const progress = ((currentStep + 1) / steps.length) * 100
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 selection:bg-blue-100 italic-text-fix">
+    <div className="min-h-screen bg-slate-50 py-6 lg:py-12 px-4 sm:px-6 lg:px-8 selection:bg-blue-100 italic-text-fix">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <header className="mb-6 lg:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-200">
-              <Zap className="w-8 h-8 text-white fill-white" />
+            <div className="w-12 h-12 lg:w-14 lg:h-14 shrink-0 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-200">
+              <Zap className="w-6 h-6 lg:w-8 lg:h-8 text-white fill-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight">AI Resume Builder</h1>
-              <p className="text-slate-500 font-medium italic">Crafting your professional future</p>
+              <h1 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">AI Resume Builder</h1>
+              <p className="text-sm lg:text-base text-slate-500 font-medium italic">Crafting your professional future</p>
             </div>
           </div>
 
-          <div className="flex bg-white p-2 rounded-2xl border border-slate-200 shadow-sm gap-2">
+          <div className="flex flex-wrap bg-white p-2 rounded-2xl border border-slate-200 shadow-sm gap-2 justify-center">
             <button 
               onClick={handleFillDemoData} 
               className="px-4 py-2 text-xs font-black uppercase tracking-widest text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
@@ -182,8 +182,9 @@ export default function ResumeBuilder() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <aside className="lg:col-span-3 space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block lg:col-span-3 space-y-3">
              {steps.map((step, index) => (
                <button
                  key={step.id}
@@ -226,8 +227,32 @@ export default function ResumeBuilder() {
              </div>
           </aside>
 
+          {/* Mobile Stepper */}
+          <div className="lg:hidden flex overflow-x-auto gap-2 pb-2 scrollbar-hide snap-x">
+             {steps.map((step, index) => (
+               <button
+                 key={step.id}
+                 onClick={() => setCurrentStep(index)}
+                 className={`shrink-0 snap-start px-4 py-2 rounded-xl text-sm font-bold border-2 transition-all flex items-center gap-2 ${
+                   index === currentStep
+                     ? 'bg-white border-blue-600 text-blue-700 shadow-sm'
+                     : index < currentStep
+                       ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                       : 'bg-white border-slate-100 text-slate-400'
+                 }`}
+               >
+                 <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
+                   index === currentStep ? 'bg-blue-600 text-white' : index < currentStep ? 'bg-emerald-200 text-emerald-800' : 'bg-slate-100'
+                 }`}>
+                   {index < currentStep ? '✓' : index + 1}
+                 </span>
+                 {step.title}
+               </button>
+             ))}
+          </div>
+
           <main className="lg:col-span-9">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 p-8 md:p-12 min-h-[600px] flex flex-col">
+            <div className="bg-white rounded-[2rem] lg:rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 p-6 sm:p-8 lg:p-12 min-h-[600px] flex flex-col">
               <div className="flex-1">
                 {currentStep === 0 && (
                   <PersonalInfoStep 
