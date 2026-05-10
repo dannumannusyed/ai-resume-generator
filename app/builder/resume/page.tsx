@@ -282,22 +282,22 @@ export default function ResumeBuilder() {
                 )}
               </div>
 
-              <footer className="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between gap-4">
+              <footer className="mt-12 pt-8 border-t border-slate-100 flex flex-row items-center justify-center gap-3 sm:gap-4">
                 <button
                   onClick={handleBack}
                   disabled={currentStep === 0}
-                  className="px-8 py-4 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 group"
+                  className="flex-1 sm:flex-none px-4 sm:px-8 py-4 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 group text-sm sm:text-base"
                 >
-                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform" />
                   Previous
                 </button>
                 
                 <button
                   onClick={handleNext}
-                  className="flex-1 max-w-xs px-8 py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-blue-600 shadow-xl transition-all flex items-center justify-center gap-3 active:scale-95 group"
+                  className="flex-[2] sm:flex-none sm:min-w-[200px] px-6 sm:px-8 py-4 bg-slate-900 text-white font-black rounded-2xl hover:bg-blue-600 shadow-xl transition-all flex items-center justify-center gap-2 sm:gap-3 active:scale-95 group text-sm sm:text-base"
                 >
                   {currentStep === steps.length - 1 ? 'Finish Project' : 'Continue'}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </footer>
             </div>
