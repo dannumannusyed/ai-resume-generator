@@ -30,7 +30,7 @@ export default function TemplateExecutive({ content }: TemplateProps) {
   return (
     <div className="bg-white h-full w-full shadow-2xl print:shadow-none flex overflow-hidden font-sans">
       {/* Sidebar */}
-      <div className="w-[220pt] bg-slate-900 px-10 py-16 text-white flex flex-col shrink-0">
+      <div className="w-[220pt] bg-slate-900 px-10 py-16 print:pt-8 text-white flex flex-col shrink-0">
         <div className="mb-12 border-b border-slate-700 pb-8">
             <div className="prose prose-invert max-w-none 
               prose-h1:text-left prose-h1:text-3xl prose-h1:font-black prose-h1:uppercase prose-h1:tracking-tight prose-h1:text-white prose-h1:m-0
@@ -64,7 +64,7 @@ export default function TemplateExecutive({ content }: TemplateProps) {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-16 bg-white">
+      <div className="flex-1 p-16 print:pt-8 bg-white">
         <div className="prose prose-slate max-w-none prose-sm
           prose-h2:text-slate-900 prose-h2:text-[14pt] prose-h2:font-black prose-h2:uppercase prose-h2:tracking-[0.2em] prose-h2:border-b-2 prose-h2:border-slate-100 prose-h2:pb-3 prose-h2:mt-12 prose-h2:mb-6
           prose-h3:text-blue-700 prose-h3:text-[12pt] prose-h3:font-black prose-h3:mt-8 prose-h3:mb-2
