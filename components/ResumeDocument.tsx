@@ -7,8 +7,8 @@ import TemplateMinimalist from './TemplateMinimalist'
 
 export type TemplateType = 'classic' | 'executive' | 'minimalist'
 
-const A4_WIDTH_PX = 794   // 210mm at 96dpi
-const A4_HEIGHT_PX = 1123 // 297mm at 96dpi
+const A4_WIDTH_PX  = 794   // 210mm at 96dpi
+const A4_HEIGHT_PX = 1123  // 297mm at 96dpi
 
 interface ResumeDocumentProps {
   content: string
@@ -17,21 +17,20 @@ interface ResumeDocumentProps {
 }
 
 export default function ResumeDocument({ content, template, isTrial = false }: ResumeDocumentProps) {
-  const wrapperRef = useRef<HTMLDivElement>(null)
+  const outerRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     function computeScale() {
-      const viewportWidth = window.innerWidth
-      const mobile = viewportWidth < 1024
+      const vw = window.innerWidth
+      const mobile = vw < 1024
       setIsMobile(mobile)
 
-      if (mobile && wrapperRef.current) {
-        // Subtract horizontal padding (1rem each side = 32px)
-        const availableWidth = wrapperRef.current.clientWidth
-        const newScale = availableWidth / A4_WIDTH_PX
-        setScale(newScale)
+      if (mobile && outerRef.current) {
+        // Use the outer wrapper width (minus any padding) as available width
+        const available = outerRef.current.clientWidth - 32 // 16px padding each side
+        setScale(Math.min(1, available / A4_WIDTH_PX))
       } else {
         setScale(1)
       }
@@ -42,23 +41,27 @@ export default function ResumeDocument({ content, template, isTrial = false }: R
     return () => window.removeEventListener('resize', computeScale)
   }, [])
 
+  // Visual dimensions of the scaled canvas
+  const visualW = isMobile ? A4_WIDTH_PX  * scale : A4_WIDTH_PX
+  const visualH = isMobile ? A4_HEIGHT_PX * scale : A4_HEIGHT_PX
+
   return (
     <div
-      ref={wrapperRef}
-      className={`resume-canvas-wrapper flex justify-center py-4 md:py-8 bg-slate-100 print:p-0 print:bg-white print:block ${isTrial ? 'select-none' : ''}`}
+      ref={outerRef}
+      className={`resume-canvas-wrapper w-full flex justify-center py-4 md:py-8 bg-slate-100 print:p-0 print:bg-white print:block ${isTrial ? 'select-none' : ''}`}
       onContextMenu={(e) => e.preventDefault()}
     >
-      {/* Outer container — on mobile, its height equals the scaled A4 height */}
+      {/*
+       * Sizing trick for CSS transform scaling:
+       * transform: scale() is purely visual — the element keeps its original
+       * layout footprint (794px). To prevent that from pushing the page wide,
+       * we put the canvas inside a container whose dimensions match the VISUAL
+       * (scaled) size, and make the canvas position: absolute so it doesn't
+       * contribute to document flow.
+       */}
       <div
-        className="relative"
-        style={
-          isMobile
-            ? {
-                width: `${A4_WIDTH_PX * scale}px`,
-                height: `${A4_HEIGHT_PX * scale}px`,
-              }
-            : { width: `${A4_WIDTH_PX}px` }
-        }
+        className="relative overflow-hidden"
+        style={{ width: `${visualW}px`, height: `${visualH}px` }}
       >
         {/* Anti-inspect shield — blocks right-click / touch selection */}
         <div
@@ -67,11 +70,14 @@ export default function ResumeDocument({ content, template, isTrial = false }: R
           onContextMenu={(e) => e.preventDefault()}
         />
 
-        {/* The actual A4 canvas — always 794×1123px, scaled on mobile */}
+        {/* A4 canvas — always 794 × 1123 px; scaled on mobile via transform */}
         <div
-          className="resume-canvas bg-white shadow-2xl print:shadow-none relative print:transform-none"
+          className="resume-canvas bg-white shadow-2xl print:shadow-none"
           style={{
-            width: `${A4_WIDTH_PX}px`,
+            position: isMobile ? 'absolute' : 'relative',
+            top: 0,
+            left: 0,
+            width:  `${A4_WIDTH_PX}px`,
             height: `${A4_HEIGHT_PX}px`,
             transformOrigin: 'top left',
             transform: isMobile ? `scale(${scale})` : 'none',
@@ -106,8 +112,8 @@ export default function ResumeDocument({ content, template, isTrial = false }: R
 
           <div className={isTrial ? 'blur-[3px] grayscale-[0.5] opacity-80' : ''}>
             {template === 'classic'    && <TemplateClassic    content={content} />}
-            {template === 'executive' && <TemplateExecutive  content={content} />}
-            {template === 'minimalist'&& <TemplateMinimalist content={content} />}
+            {template === 'executive'  && <TemplateExecutive  content={content} />}
+            {template === 'minimalist' && <TemplateMinimalist content={content} />}
           </div>
         </div>
       </div>
