@@ -14,7 +14,7 @@ interface ResumeDocumentProps {
 export default function ResumeDocument({ content, template, isTrial = false }: ResumeDocumentProps) {
   return (
     <div className={`resume-canvas-wrapper flex justify-center py-8 bg-slate-200/50 min-h-screen overflow-auto print:p-0 print:bg-white print:block print:min-h-0 print:h-auto ${isTrial ? 'select-none' : ''}`}>
-      <div className="resume-canvas shadow-2xl print:shadow-none mb-12 print:mb-0 print:mt-0 w-[210mm] min-h-[297mm] print:h-[297mm] bg-white relative">
+      <div className="resume-canvas shadow-2xl print:shadow-none mb-12 print:mb-0 print:mt-0 w-[210mm] min-w-[210mm] max-w-[210mm] min-h-[297mm] print:h-[297mm] bg-white relative">
         {isTrial && (
           <>
             {/* watermark overlay */}
