@@ -161,10 +161,8 @@
     align-items: flex-start !important;
   }
 
-  /* *** KEY FIX: Always reset mobile scale transform for print *** */
+  /* *** Transform is controlled by JS in handleDownloadPDF (auto-fits to A4) *** */
   .resume-canvas {
-    transform: none !important;
-    transform-origin: top left !important;
     width: 210mm !important;
     height: 297mm !important;
     min-height: unset !important;

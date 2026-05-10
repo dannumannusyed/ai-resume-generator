@@ -219,12 +219,63 @@ export default function ResumePreview() {
   }, [resumeId, resumeData, jobAnalysis, generatedResume])
 
   const handleDownloadPDF = () => {
+    const A4_W = 794  // px — 210mm at 96dpi
+    const A4_H = 1123 // px — 297mm at 96dpi
+
     const originalTitle = document.title
     const name = `${resumeData.personalInfo.firstName || ''} ${resumeData.personalInfo.lastName || ''}`.trim()
     const role = jobAnalysis?.role || 'Resume'
     document.title = `${name ? name + ' - ' : ''}${role} Resume`
+
+    const canvas = document.querySelector('.resume-canvas') as HTMLElement | null
+
+    const beforePrint = () => {
+      if (!canvas) return
+
+      // Save existing inline styles so we can restore them after print
+      canvas.dataset.pTransform = canvas.style.transform
+      canvas.dataset.pHeight   = canvas.style.height
+      canvas.dataset.pOverflow = canvas.style.overflow
+      canvas.dataset.pWidth    = canvas.style.width
+
+      // Temporarily reset to natural size to measure real content height
+      canvas.style.transform  = 'none'
+      canvas.style.transformOrigin = 'top left'
+      canvas.style.width    = `${A4_W}px`
+      canvas.style.height   = 'auto'
+      canvas.style.overflow = 'visible'
+
+      // Force layout reflow then read true scrollHeight
+      const contentH = canvas.scrollHeight
+      const scale = contentH > A4_H ? A4_H / contentH : 1
+
+      // Apply scale so everything fits on exactly one A4 page
+      canvas.style.transform  = `scale(${scale})`
+      canvas.style.width    = `${A4_W}px`
+      canvas.style.height   = `${A4_H}px`
+      canvas.style.overflow = 'hidden'
+    }
+
+    const afterPrint = () => {
+      if (canvas) {
+        canvas.style.transform  = canvas.dataset.pTransform ?? ''
+        canvas.style.height     = canvas.dataset.pHeight    ?? ''
+        canvas.style.overflow   = canvas.dataset.pOverflow  ?? ''
+        canvas.style.width      = canvas.dataset.pWidth     ?? ''
+        canvas.style.transformOrigin = ''
+        delete canvas.dataset.pTransform
+        delete canvas.dataset.pHeight
+        delete canvas.dataset.pOverflow
+        delete canvas.dataset.pWidth
+      }
+      document.title = originalTitle
+      window.removeEventListener('beforeprint', beforePrint)
+      window.removeEventListener('afterprint',  afterPrint)
+    }
+
+    window.addEventListener('beforeprint', beforePrint)
+    window.addEventListener('afterprint',  afterPrint)
     window.print()
-    setTimeout(() => { document.title = originalTitle }, 500)
   }
 
   const handleGenerate = useCallback(async () => {
