@@ -227,46 +227,86 @@ export default function ResumePreview() {
     const role = jobAnalysis?.role || 'Resume'
     document.title = `${name ? name + ' - ' : ''}${role} Resume`
 
-    const canvas = document.querySelector('.resume-canvas') as HTMLElement | null
+    const canvas  = document.querySelector('.resume-canvas') as HTMLElement | null
+    // The wrapper is the direct parent — it holds the visual (scaled) dimensions on mobile
+    const wrapper = canvas?.parentElement as HTMLElement | null
 
     const beforePrint = () => {
-      if (!canvas) return
+      if (!canvas || !wrapper) return
 
-      // Save existing inline styles so we can restore them after print
-      canvas.dataset.pTransform = canvas.style.transform
-      canvas.dataset.pHeight   = canvas.style.height
-      canvas.dataset.pOverflow = canvas.style.overflow
-      canvas.dataset.pWidth    = canvas.style.width
+      // ── Save wrapper state ────────────────────────────────────────────
+      wrapper.dataset.pWidth    = wrapper.style.width
+      wrapper.dataset.pHeight   = wrapper.style.height
+      wrapper.dataset.pOverflow = wrapper.style.overflow
+      wrapper.dataset.pPosition = wrapper.style.position
 
-      // Temporarily reset to natural size to measure real content height
-      canvas.style.transform  = 'none'
+      // ── Save canvas state ─────────────────────────────────────────────
+      canvas.dataset.pTransform       = canvas.style.transform
+      canvas.dataset.pTransformOrigin = canvas.style.transformOrigin
+      canvas.dataset.pHeight          = canvas.style.height
+      canvas.dataset.pWidth           = canvas.style.width
+      canvas.dataset.pPosition        = canvas.style.position
+      canvas.dataset.pOverflow        = canvas.style.overflow
+
+      // ── Expand wrapper to full A4 so canvas has room ──────────────────
+      wrapper.style.width    = `${A4_W}px`
+      wrapper.style.height   = 'auto'
+      wrapper.style.overflow = 'visible'
+      wrapper.style.position = 'relative'
+
+      // ── Reset canvas to natural (no transform) to measure content ─────
+      canvas.style.position        = 'relative'
+      canvas.style.transform       = 'none'
       canvas.style.transformOrigin = 'top left'
-      canvas.style.width    = `${A4_W}px`
-      canvas.style.height   = 'auto'
-      canvas.style.overflow = 'visible'
+      canvas.style.width           = `${A4_W}px`
+      canvas.style.height          = 'auto'
+      canvas.style.overflow        = 'visible'
 
-      // Force layout reflow then read true scrollHeight
+      // Force layout reflow, then read true scrollHeight
       const contentH = canvas.scrollHeight
-      const scale = contentH > A4_H ? A4_H / contentH : 1
+      const scale    = contentH > A4_H ? A4_H / contentH : 1
 
-      // Apply scale so everything fits on exactly one A4 page
+      // ── Apply fit-to-A4 scale on canvas ───────────────────────────────
       canvas.style.transform  = `scale(${scale})`
-      canvas.style.width    = `${A4_W}px`
-      canvas.style.height   = `${A4_H}px`
-      canvas.style.overflow = 'hidden'
+      canvas.style.width      = `${A4_W}px`
+      canvas.style.height     = `${A4_H}px`
+      canvas.style.overflow   = 'hidden'
+      canvas.style.position   = 'absolute'
+      canvas.style.top        = '0'
+      canvas.style.left       = '0'
+
+      // Clamp wrapper to A4 so print page is exactly A4
+      wrapper.style.width    = `${A4_W}px`
+      wrapper.style.height   = `${A4_H}px`
+      wrapper.style.overflow = 'hidden'
     }
 
     const afterPrint = () => {
+      if (wrapper) {
+        wrapper.style.width    = wrapper.dataset.pWidth    ?? ''
+        wrapper.style.height   = wrapper.dataset.pHeight   ?? ''
+        wrapper.style.overflow = wrapper.dataset.pOverflow ?? ''
+        wrapper.style.position = wrapper.dataset.pPosition ?? ''
+        delete wrapper.dataset.pWidth
+        delete wrapper.dataset.pHeight
+        delete wrapper.dataset.pOverflow
+        delete wrapper.dataset.pPosition
+      }
       if (canvas) {
-        canvas.style.transform  = canvas.dataset.pTransform ?? ''
-        canvas.style.height     = canvas.dataset.pHeight    ?? ''
-        canvas.style.overflow   = canvas.dataset.pOverflow  ?? ''
-        canvas.style.width      = canvas.dataset.pWidth     ?? ''
-        canvas.style.transformOrigin = ''
+        canvas.style.transform       = canvas.dataset.pTransform       ?? ''
+        canvas.style.transformOrigin = canvas.dataset.pTransformOrigin ?? ''
+        canvas.style.height          = canvas.dataset.pHeight          ?? ''
+        canvas.style.width           = canvas.dataset.pWidth           ?? ''
+        canvas.style.position        = canvas.dataset.pPosition        ?? ''
+        canvas.style.overflow        = canvas.dataset.pOverflow        ?? ''
+        canvas.style.top             = ''
+        canvas.style.left            = ''
         delete canvas.dataset.pTransform
+        delete canvas.dataset.pTransformOrigin
         delete canvas.dataset.pHeight
-        delete canvas.dataset.pOverflow
         delete canvas.dataset.pWidth
+        delete canvas.dataset.pPosition
+        delete canvas.dataset.pOverflow
       }
       document.title = originalTitle
       window.removeEventListener('beforeprint', beforePrint)
@@ -276,6 +316,7 @@ export default function ResumePreview() {
     window.addEventListener('beforeprint', beforePrint)
     window.addEventListener('afterprint',  afterPrint)
     window.print()
+
   }
 
   const handleGenerate = useCallback(async () => {
