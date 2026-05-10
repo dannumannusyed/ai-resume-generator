@@ -229,47 +229,16 @@ export default function ResumePreview() {
 
     const canvas  = document.querySelector('.resume-canvas') as HTMLElement | null
     const wrapper = canvas?.parentElement as HTMLElement | null
+    const vpMeta  = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null
 
-    const beforePrint = () => {
-      if (!canvas || !wrapper) return
-
-      // ── Save current inline styles so we can restore after print ─────────
-      wrapper.dataset.pWidth    = wrapper.style.width
-      wrapper.dataset.pHeight   = wrapper.style.height
-      wrapper.dataset.pOverflow = wrapper.style.overflow
-      wrapper.dataset.pPosition = wrapper.style.position
-
-      canvas.dataset.pTransform       = canvas.style.transform
-      canvas.dataset.pTransformOrigin = canvas.style.transformOrigin
-      canvas.dataset.pHeight          = canvas.style.height
-      canvas.dataset.pWidth           = canvas.style.width
-      canvas.dataset.pPosition        = canvas.style.position
-      canvas.dataset.pOverflow        = canvas.style.overflow
-      canvas.dataset.pTop             = canvas.style.top
-      canvas.dataset.pLeft            = canvas.style.left
-
-      // ── Reset wrapper to full A4 ──────────────────────────────────────────
-      // Do NOT attempt to measure scrollHeight — on mobile the viewport
-      // constraint makes scrollHeight unreliable and produces a wrong scale.
-      // Instead, render at exact A4 size and let @page { size: A4 } + the
-      // browser's print engine handle fitting the content to the paper.
-      wrapper.style.width    = `${A4_W}px`
-      wrapper.style.height   = `${A4_H}px`
-      wrapper.style.overflow = 'hidden'
-      wrapper.style.position = 'relative'
-
-      // ── Reset canvas: exact A4, no transform ────────────────────────────
-      canvas.style.position        = 'absolute'
-      canvas.style.top             = '0'
-      canvas.style.left            = '0'
-      canvas.style.transform       = 'none'
-      canvas.style.transformOrigin = 'top left'
-      canvas.style.width           = `${A4_W}px`
-      canvas.style.height          = `${A4_H}px`
-      canvas.style.overflow        = 'hidden'
-    }
-
-    const afterPrint = () => {
+    // ── Helper: restore everything after print ───────────────────────────
+    const restoreAll = () => {
+      // Restore viewport
+      if (vpMeta && vpMeta.dataset.origViewport) {
+        vpMeta.setAttribute('content', vpMeta.dataset.origViewport)
+        delete vpMeta.dataset.origViewport
+      }
+      // Restore wrapper
       if (wrapper) {
         wrapper.style.width    = wrapper.dataset.pWidth    ?? ''
         wrapper.style.height   = wrapper.dataset.pHeight   ?? ''
@@ -280,6 +249,7 @@ export default function ResumePreview() {
         delete wrapper.dataset.pOverflow
         delete wrapper.dataset.pPosition
       }
+      // Restore canvas
       if (canvas) {
         canvas.style.transform       = canvas.dataset.pTransform       ?? ''
         canvas.style.transformOrigin = canvas.dataset.pTransformOrigin ?? ''
@@ -299,13 +269,59 @@ export default function ResumePreview() {
         delete canvas.dataset.pLeft
       }
       document.title = originalTitle
-      window.removeEventListener('beforeprint', beforePrint)
-      window.removeEventListener('afterprint',  afterPrint)
     }
 
-    window.addEventListener('beforeprint', beforePrint)
-    window.addEventListener('afterprint',  afterPrint)
-    window.print()
+    const afterPrint = () => {
+      restoreAll()
+      window.removeEventListener('afterprint', afterPrint)
+    }
+
+    // ── Step 1: Expand canvas to full A4 ─────────────────────────────────
+    if (canvas && wrapper) {
+      // Save current styles
+      wrapper.dataset.pWidth    = wrapper.style.width
+      wrapper.dataset.pHeight   = wrapper.style.height
+      wrapper.dataset.pOverflow = wrapper.style.overflow
+      wrapper.dataset.pPosition = wrapper.style.position
+
+      canvas.dataset.pTransform       = canvas.style.transform
+      canvas.dataset.pTransformOrigin = canvas.style.transformOrigin
+      canvas.dataset.pHeight          = canvas.style.height
+      canvas.dataset.pWidth           = canvas.style.width
+      canvas.dataset.pPosition        = canvas.style.position
+      canvas.dataset.pOverflow        = canvas.style.overflow
+      canvas.dataset.pTop             = canvas.style.top
+      canvas.dataset.pLeft            = canvas.style.left
+
+      // Reset wrapper to full A4
+      wrapper.style.width    = `${A4_W}px`
+      wrapper.style.height   = `${A4_H}px`
+      wrapper.style.overflow = 'hidden'
+      wrapper.style.position = 'relative'
+
+      // Reset canvas — no mobile transform
+      canvas.style.position        = 'absolute'
+      canvas.style.top             = '0'
+      canvas.style.left            = '0'
+      canvas.style.transform       = 'none'
+      canvas.style.transformOrigin = 'top left'
+      canvas.style.width           = `${A4_W}px`
+      canvas.style.height          = `${A4_H}px`
+      canvas.style.overflow        = 'hidden'
+    }
+
+    // ── Step 2: Change viewport to A4 width (forces mobile browser to   ──
+    //   render at full A4 resolution instead of mobile viewport width)  ──
+    if (vpMeta) {
+      vpMeta.dataset.origViewport = vpMeta.getAttribute('content') || ''
+      vpMeta.setAttribute('content', `width=${A4_W}, initial-scale=1`)
+    }
+
+    // ── Step 3: Wait for reflow then print ───────────────────────────────
+    window.addEventListener('afterprint', afterPrint)
+    setTimeout(() => {
+      window.print()
+    }, 350) // Allow browser to reflow at new viewport width before printing
   }
 
   const handleGenerate = useCallback(async () => {
