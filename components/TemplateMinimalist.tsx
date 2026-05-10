@@ -7,7 +7,7 @@ interface TemplateProps {
 
 export default function TemplateMinimalist({ content }: TemplateProps) {
   return (
-    <div className="bg-white h-full w-full shadow-2xl print:shadow-none font-sans py-20 print:pt-10 px-24 text-slate-700 overflow-hidden">
+    <div className="bg-white h-full w-full shadow-2xl print:shadow-none font-sans py-20 print:pt-4 px-24 text-slate-700 overflow-hidden">
       <div className="prose prose-slate max-w-none 
         prose-h1:text-center prose-h1:text-5xl prose-h1:font-thin prose-h1:tracking-[0.15em] prose-h1:mb-4 prose-h1:text-slate-900 prose-h1:uppercase
         prose-p:text-slate-500 prose-p:text-center prose-p:text-[9pt] prose-p:tracking-[0.1em] prose-p:uppercase prose-p:my-2 prose-p:font-medium

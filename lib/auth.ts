@@ -64,7 +64,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
+        // Normalize ID to UUID format if it's a numeric string (e.g. Google ID)
+        let normalizedId = user.id
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(normalizedId)) {
+          // Deterministic "fake" UUID from numeric ID
+          const hex = normalizedId.replace(/\D/g, '').padEnd(32, '0').substring(0, 32)
+          normalizedId = `${hex.substring(0, 8)}-${hex.substring(8, 12)}-4${hex.substring(13, 16)}-a${hex.substring(17, 20)}-${hex.substring(20, 32)}`
+        }
+        token.id = normalizedId
       }
       return token
     },

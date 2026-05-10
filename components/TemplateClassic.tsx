@@ -7,7 +7,7 @@ interface TemplateProps {
 
 export default function TemplateClassic({ content }: TemplateProps) {
   return (
-    <div className="p-16 print:pt-8 font-serif text-slate-900 bg-white shadow-2xl print:shadow-none h-full w-full overflow-hidden">
+    <div className="p-16 print:pt-4 font-serif text-slate-900 bg-white shadow-2xl print:shadow-none h-full w-full overflow-hidden">
       <div className="prose prose-slate max-w-none prose-sm leading-relaxed
         prose-h1:text-center prose-h1:text-[22pt] prose-h1:mb-2 prose-h1:font-bold prose-h1:text-slate-900 prose-h1:tracking-tight
         prose-h2:text-slate-900 prose-h2:text-[11pt] prose-h2:font-bold prose-h2:uppercase prose-h2:tracking-[0.15em] prose-h2:border-b prose-h2:border-slate-900 prose-h2:pb-1 prose-h2:mt-10 prose-h2:mb-4
