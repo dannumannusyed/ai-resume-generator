@@ -121,71 +121,71 @@
 .resume-canvas {
   background: white;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
-  width: 210mm;
-  min-height: 297mm;
-  margin: 0 auto;
-  overflow: visible;
+  overflow: hidden;
 }
 
 @media print {
   @page {
-    size: A4;
-    margin: 0;
+    size: A4 portrait;
+    margin: 0mm;
   }
-  
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   html, body {
     width: 210mm !important;
     height: 297mm !important;
+    max-width: 210mm !important;
     overflow: hidden !important;
     background: white !important;
     padding: 0 !important;
     margin: 0 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
 
-  /* Ensure the wrapper also doesn't cause overflow */
+  /* Hide everything except the resume canvas wrapper */
+  body > *:not(.resume-canvas-wrapper),
+  .print\:hidden,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Wrapper: strip all decorative layout */
   .resume-canvas-wrapper {
-    height: 297mm !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
+    all: unset !important;
     display: block !important;
-  }
-
-  .resume-canvas {
     width: 210mm !important;
     height: 297mm !important;
-    min-height: 297mm !important;
-    max-height: 297mm !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
+  /* *** KEY FIX: Reset the mobile scale transform for print *** */
+  .resume-canvas {
+    transform: none !important;
+    transform-origin: unset !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: unset !important;
+    max-height: unset !important;
     box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
+    position: relative !important;
     display: block !important;
     border: none !important;
+    background: white !important;
   }
 
-  /* Prevent elements from breaking across pages if the browser tries to add one */
-  h1, h2, h3, p, li, .prose > * {
+  /* Prevent page breaks inside content elements */
+  h1, h2, h3, p, li {
     page-break-inside: avoid;
     break-inside: avoid;
-  }
-
-  .print-hidden,
-  header,
-  nav,
-  footer,
-  .no-print,
-  .btn,
-  .sidebar {
-    display: none !important;
-  }
-
-  /* Force background colors and colors to print */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
 }
 

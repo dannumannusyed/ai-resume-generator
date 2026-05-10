@@ -219,19 +219,93 @@ export default function ResumePreview() {
   }, [resumeId, resumeData, jobAnalysis, generatedResume])
 
   const handleDownloadPDF = () => {
-    const originalTitle = document.title
+    // Find the resume canvas element
+    const canvas = document.querySelector('.resume-canvas') as HTMLElement
+    if (!canvas) {
+      alert('Could not find resume content. Please try again.')
+      return
+    }
+
     const name = `${resumeData.personalInfo.firstName || ''} ${resumeData.personalInfo.lastName || ''}`.trim()
     const role = jobAnalysis?.role || 'Resume'
-    
-    // Set dynamic title for PDF filename
-    document.title = `${name ? name + ' - ' : ''}${role} Resume`
-    
-    window.print()
-    
-    // Restore original title
-    setTimeout(() => {
-      document.title = originalTitle
-    }, 100)
+    const filename = `${name ? name + ' - ' : ''}${role} Resume`
+
+    // Get all stylesheets from current page
+    const styleLinks = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+      .map((l) => l.outerHTML)
+      .join('\n')
+    const inlineStyles = Array.from(document.querySelectorAll('style'))
+      .map((s) => `<style>${s.innerHTML}</style>`)
+      .join('\n')
+
+    // Clone the canvas without the transform scaling
+    const canvasClone = canvas.cloneNode(true) as HTMLElement
+    canvasClone.style.transform = 'none'
+    canvasClone.style.transformOrigin = 'unset'
+    canvasClone.style.width = '210mm'
+    canvasClone.style.height = '297mm'
+    canvasClone.style.boxShadow = 'none'
+    canvasClone.style.margin = '0'
+    canvasClone.style.padding = '0'
+    canvasClone.style.overflow = 'hidden'
+
+    // Remove trial overlays from clone (shield, blur, watermark)
+    canvasClone.querySelectorAll('.z-\\[70\\], .z-\\[60\\], .z-50').forEach((el) => el.remove())
+
+    const printWindow = window.open('', '_blank', 'width=900,height=1200')
+    if (!printWindow) {
+      alert('Please allow pop-ups for this site to download the PDF.')
+      return
+    }
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${filename}</title>
+          ${styleLinks}
+          ${inlineStyles}
+          <style>
+            @page {
+              size: A4 portrait;
+              margin: 0mm;
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            html, body {
+              width: 210mm;
+              height: 297mm;
+              margin: 0;
+              padding: 0;
+              overflow: hidden;
+              background: white;
+            }
+            .resume-canvas {
+              width: 210mm !important;
+              height: 297mm !important;
+              transform: none !important;
+              box-shadow: none !important;
+              margin: 0 !important;
+              overflow: hidden !important;
+            }
+          </style>
+        </head>
+        <body>
+          ${canvasClone.outerHTML}
+          <script>
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+                window.close();
+              }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `)
+    printWindow.document.close()
   }
 
   const handleGenerate = useCallback(async () => {
