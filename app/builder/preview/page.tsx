@@ -219,110 +219,104 @@ export default function ResumePreview() {
   }, [resumeId, resumeData, jobAnalysis, generatedResume])
 
   const handleDownloadPDF = () => {
-    const A4_W = 794  // px — 210mm at 96dpi
-    const A4_H = 1123 // px — 297mm at 96dpi
+    const A4_W = 794  // 210mm at 96dpi
+    const A4_H = 1123 // 297mm at 96dpi
 
-    const originalTitle = document.title
     const name = `${resumeData.personalInfo.firstName || ''} ${resumeData.personalInfo.lastName || ''}`.trim()
     const role = jobAnalysis?.role || 'Resume'
-    document.title = `${name ? name + ' - ' : ''}${role} Resume`
+    const title = `${name ? name + ' - ' : ''}${role} Resume`
 
-    const canvas  = document.querySelector('.resume-canvas') as HTMLElement | null
-    const wrapper = canvas?.parentElement as HTMLElement | null
-    const vpMeta  = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null
+    const canvas = document.querySelector('.resume-canvas') as HTMLElement | null
+    if (!canvas) { alert('Resume not found. Please try again.'); return }
 
-    // ── Helper: restore everything after print ───────────────────────────
-    const restoreAll = () => {
-      // Restore viewport
-      if (vpMeta && vpMeta.dataset.origViewport) {
-        vpMeta.setAttribute('content', vpMeta.dataset.origViewport)
-        delete vpMeta.dataset.origViewport
+    // ── Clone the canvas and strip mobile transform ───────────────────────
+    const clone = canvas.cloneNode(true) as HTMLElement
+    clone.style.cssText = [
+      `width:${A4_W}px`,
+      `height:${A4_H}px`,
+      'transform:none',
+      'transform-origin:top left',
+      'position:relative',
+      'overflow:hidden',
+      'box-shadow:none',
+      'margin:0',
+      'padding:0',
+    ].join(';')
+
+    // ── Collect all CSS <link> tags (root-relative → work in same-origin iframe) ──
+    const styleLinks = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
+      .map(l => l.outerHTML)
+      .join('\n')
+
+    // ── Create a hidden iframe with its own 794px viewport ────────────────
+    const iframe = document.createElement('iframe')
+    iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-modals')
+    iframe.style.cssText =
+      'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden;'
+    document.body.appendChild(iframe)
+
+    const iframeDoc = iframe.contentDocument
+    if (!iframeDoc) { document.body.removeChild(iframe); return }
+
+    iframeDoc.open()
+    iframeDoc.write(`<!DOCTYPE html><html>
+<head>
+  <title>${title}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=${A4_W}, initial-scale=1">
+  ${styleLinks}
+  <style>
+    @page { size: A4 portrait; margin: 0mm; }
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    html, body {
+      width: ${A4_W}px;
+      height: ${A4_H}px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: white;
+    }
+    .resume-canvas {
+      transform: none !important;
+      width: ${A4_W}px !important;
+      height: ${A4_H}px !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+  </style>
+</head>
+<body>${clone.outerHTML}</body>
+</html>`)
+    iframeDoc.close()
+
+    const cleanup = () => {
+      setTimeout(() => {
+        if (document.body.contains(iframe)) document.body.removeChild(iframe)
+      }, 1500)
+    }
+
+    // ── Wait for all stylesheets to load, then print via the iframe ───────
+    const links = Array.from(iframeDoc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
+    if (links.length === 0) {
+      setTimeout(() => { iframe.contentWindow?.print(); cleanup() }, 300)
+      return
+    }
+
+    let loaded = 0
+    const onLoad = () => {
+      loaded++
+      if (loaded >= links.length) {
+        setTimeout(() => { iframe.contentWindow?.print(); cleanup() }, 300)
       }
-      // Restore wrapper
-      if (wrapper) {
-        wrapper.style.width    = wrapper.dataset.pWidth    ?? ''
-        wrapper.style.height   = wrapper.dataset.pHeight   ?? ''
-        wrapper.style.overflow = wrapper.dataset.pOverflow ?? ''
-        wrapper.style.position = wrapper.dataset.pPosition ?? ''
-        delete wrapper.dataset.pWidth
-        delete wrapper.dataset.pHeight
-        delete wrapper.dataset.pOverflow
-        delete wrapper.dataset.pPosition
-      }
-      // Restore canvas
-      if (canvas) {
-        canvas.style.transform       = canvas.dataset.pTransform       ?? ''
-        canvas.style.transformOrigin = canvas.dataset.pTransformOrigin ?? ''
-        canvas.style.height          = canvas.dataset.pHeight          ?? ''
-        canvas.style.width           = canvas.dataset.pWidth           ?? ''
-        canvas.style.position        = canvas.dataset.pPosition        ?? ''
-        canvas.style.overflow        = canvas.dataset.pOverflow        ?? ''
-        canvas.style.top             = canvas.dataset.pTop             ?? ''
-        canvas.style.left            = canvas.dataset.pLeft            ?? ''
-        delete canvas.dataset.pTransform
-        delete canvas.dataset.pTransformOrigin
-        delete canvas.dataset.pHeight
-        delete canvas.dataset.pWidth
-        delete canvas.dataset.pPosition
-        delete canvas.dataset.pOverflow
-        delete canvas.dataset.pTop
-        delete canvas.dataset.pLeft
-      }
-      document.title = originalTitle
     }
-
-    const afterPrint = () => {
-      restoreAll()
-      window.removeEventListener('afterprint', afterPrint)
-    }
-
-    // ── Step 1: Expand canvas to full A4 ─────────────────────────────────
-    if (canvas && wrapper) {
-      // Save current styles
-      wrapper.dataset.pWidth    = wrapper.style.width
-      wrapper.dataset.pHeight   = wrapper.style.height
-      wrapper.dataset.pOverflow = wrapper.style.overflow
-      wrapper.dataset.pPosition = wrapper.style.position
-
-      canvas.dataset.pTransform       = canvas.style.transform
-      canvas.dataset.pTransformOrigin = canvas.style.transformOrigin
-      canvas.dataset.pHeight          = canvas.style.height
-      canvas.dataset.pWidth           = canvas.style.width
-      canvas.dataset.pPosition        = canvas.style.position
-      canvas.dataset.pOverflow        = canvas.style.overflow
-      canvas.dataset.pTop             = canvas.style.top
-      canvas.dataset.pLeft            = canvas.style.left
-
-      // Reset wrapper to full A4
-      wrapper.style.width    = `${A4_W}px`
-      wrapper.style.height   = `${A4_H}px`
-      wrapper.style.overflow = 'hidden'
-      wrapper.style.position = 'relative'
-
-      // Reset canvas — no mobile transform
-      canvas.style.position        = 'absolute'
-      canvas.style.top             = '0'
-      canvas.style.left            = '0'
-      canvas.style.transform       = 'none'
-      canvas.style.transformOrigin = 'top left'
-      canvas.style.width           = `${A4_W}px`
-      canvas.style.height          = `${A4_H}px`
-      canvas.style.overflow        = 'hidden'
-    }
-
-    // ── Step 2: Change viewport to A4 width (forces mobile browser to   ──
-    //   render at full A4 resolution instead of mobile viewport width)  ──
-    if (vpMeta) {
-      vpMeta.dataset.origViewport = vpMeta.getAttribute('content') || ''
-      vpMeta.setAttribute('content', `width=${A4_W}, initial-scale=1`)
-    }
-
-    // ── Step 3: Wait for reflow then print ───────────────────────────────
-    window.addEventListener('afterprint', afterPrint)
-    setTimeout(() => {
-      window.print()
-    }, 350) // Allow browser to reflow at new viewport width before printing
+    links.forEach(l => { l.addEventListener('load', onLoad); l.addEventListener('error', onLoad) })
   }
+
 
   const handleGenerate = useCallback(async () => {
     setIsGenerating(true)
