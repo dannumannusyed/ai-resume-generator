@@ -87,15 +87,26 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (error) {
-      console.error('[DATABASE ERROR]: Failed to insert resume:', error)
-      throw error
+      console.error('[DATABASE ERROR]: Failed to insert resume:', {
+        error,
+        userId: session.user.id,
+        name: name || 'Untitled'
+      })
+      return NextResponse.json(
+        { error: `Database error: ${error.message}`, details: error },
+        { status: 500 }
+      )
+    }
+
+    if (!resume) {
+      return NextResponse.json({ error: 'No data returned after insert' }, { status: 500 })
     }
 
     return NextResponse.json({ data: resume })
   } catch (error: any) {
     console.error('POST /api/resumes error:', error)
     return NextResponse.json(
-      { error: error.message || 'Failed to save resume', details: error },
+      { error: error.message || 'Internal server error while saving resume', details: error },
       { status: 500 }
     )
   }

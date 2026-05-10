@@ -424,12 +424,13 @@ export default function ResumePreview() {
           }
           alert('Resume saved successfully! You can view it in your dashboard.')
         } else {
-          throw new Error('Failed to save')
+          const errorData = await res.json().catch(() => ({}))
+          throw new Error(errorData.error || 'Failed to save')
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      alert('Error saving resume')
+      alert(`Error saving resume: ${err.message}`)
     } finally {
       setIsSaving(false)
     }
