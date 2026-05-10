@@ -226,10 +226,19 @@ export default function ResumePreview() {
     const role = jobAnalysis?.role || 'Resume'
     const title = `${name ? name + ' - ' : ''}${role} Resume`
 
+    // ── Use direct window.print() for PC (much more reliable) ───────────
+    if (window.innerWidth > 1024) {
+      const originalTitle = document.title
+      document.title = title
+      window.print()
+      setTimeout(() => { document.title = originalTitle }, 1000)
+      return
+    }
+
+    // ── Use iframe approach for Mobile (bypasses viewport constraints) ──
     const canvas = document.querySelector('.resume-canvas') as HTMLElement | null
     if (!canvas) { alert('Resume not found. Please try again.'); return }
 
-    // ── Clone the canvas and strip mobile transform ───────────────────────
     const clone = canvas.cloneNode(true) as HTMLElement
     clone.style.cssText = [
       `width:${A4_W}px`,
@@ -243,14 +252,12 @@ export default function ResumePreview() {
       'padding:0',
     ].join(';')
 
-    // ── Collect all CSS <link> and <style> tags ───────────────────────────
     const styleTags = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
       .map(s => s.outerHTML)
       .join('\n')
 
-    // ── Create a hidden iframe with its own 794px viewport ────────────────
     const iframe = document.createElement('iframe')
-    iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-modals')
+    // No sandbox for maximum compatibility during print
     iframe.style.cssText =
       'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden;'
     document.body.appendChild(iframe)
@@ -297,13 +304,12 @@ export default function ResumePreview() {
     const cleanup = () => {
       setTimeout(() => {
         if (document.body.contains(iframe)) document.body.removeChild(iframe)
-      }, 1500)
+      }, 2000)
     }
 
-    // ── Wait for all stylesheets to load, then print via the iframe ───────
     const links = Array.from(iframeDoc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
     if (links.length === 0) {
-      setTimeout(() => { iframe.contentWindow?.print(); cleanup() }, 300)
+      setTimeout(() => { iframe.contentWindow?.print(); cleanup() }, 500)
       return
     }
 
@@ -311,7 +317,7 @@ export default function ResumePreview() {
     const onLoad = () => {
       loaded++
       if (loaded >= links.length) {
-        setTimeout(() => { iframe.contentWindow?.print(); cleanup() }, 300)
+        setTimeout(() => { iframe.contentWindow?.focus(); iframe.contentWindow?.print(); cleanup() }, 500)
       }
     }
     links.forEach(l => { l.addEventListener('load', onLoad); l.addEventListener('error', onLoad) })
