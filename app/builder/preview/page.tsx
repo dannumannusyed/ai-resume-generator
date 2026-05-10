@@ -243,9 +243,9 @@ export default function ResumePreview() {
       'padding:0',
     ].join(';')
 
-    // ── Collect all CSS <link> tags (root-relative → work in same-origin iframe) ──
-    const styleLinks = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
-      .map(l => l.outerHTML)
+    // ── Collect all CSS <link> and <style> tags ───────────────────────────
+    const styleTags = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+      .map(s => s.outerHTML)
       .join('\n')
 
     // ── Create a hidden iframe with its own 794px viewport ────────────────
@@ -264,7 +264,7 @@ export default function ResumePreview() {
   <title>${title}</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=${A4_W}, initial-scale=1">
-  ${styleLinks}
+  ${styleTags}
   <style>
     @page { size: A4 portrait; margin: 0mm; }
     *, *::before, *::after {
