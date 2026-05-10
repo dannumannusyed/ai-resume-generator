@@ -371,21 +371,21 @@ export default function ResumePreview() {
       <div className="max-w-[1280px] mx-auto">
 
         {/* ── Header ── */}
-        <div className="mb-6 flex items-center justify-between print:hidden">
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
           <div className="flex items-center gap-4">
-            <button className="btn-ghost" onClick={() => router.push('/dashboard')}>
+            <button className="btn-ghost shrink-0" onClick={() => router.push('/dashboard')}>
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Resume Preview</h1>
-              <p className="text-slate-500 text-sm">
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900 truncate">Resume Preview</h1>
+              <p className="text-slate-500 text-xs md:text-sm truncate">
                 {phase === 'original' ? 'Your original resume · baseline ATS score' : `Optimized for ${jobAnalysis?.role || 'the role'}`}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
             <button
-              className={`px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-semibold transition-all flex items-center gap-2 text-sm ${isSaving ? 'text-slate-400 cursor-not-allowed' : 'text-slate-700 hover:bg-slate-50 shadow-sm'}`}
+              className={`flex-1 md:flex-none justify-center px-4 py-2.5 md:px-5 bg-white border border-slate-200 rounded-xl font-semibold transition-all flex items-center gap-2 text-sm ${isSaving ? 'text-slate-400 cursor-not-allowed' : 'text-slate-700 hover:bg-slate-50 shadow-sm'}`}
               onClick={handleSaveResume}
               disabled={isSaving}
             >
@@ -394,7 +394,7 @@ export default function ResumePreview() {
             </button>
             {phase === 'optimized' && (
               <button
-                className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition-all flex items-center gap-2 text-sm"
+                className="flex-1 md:flex-none justify-center px-4 py-2.5 md:px-5 bg-white border border-slate-200 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition-all flex items-center gap-2 text-sm"
                 onClick={() => setEditing(true)}
               >
                 <Edit2 className="w-4 h-4" />
@@ -402,7 +402,7 @@ export default function ResumePreview() {
               </button>
             )}
             <button
-              className="btn-primary px-6 py-2.5 flex items-center gap-2 shadow-lg shadow-blue-200 text-sm"
+              className="w-full sm:w-auto sm:flex-1 md:flex-none justify-center btn-primary px-4 py-2.5 md:px-6 flex items-center gap-2 shadow-lg shadow-blue-200 text-sm"
               onClick={handleDownloadPDF}
             >
               <Download className="w-4 h-4" />
