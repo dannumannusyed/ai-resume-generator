@@ -69,6 +69,13 @@ export async function POST(req: NextRequest) {
 
     const db = createServerSupabaseClient()
 
+    // ── Ensure profile exists (Crucial for Google/NextAuth users) ─────────
+    await db.from('profiles').upsert({
+      id: session.user.id,
+      email: session.user.email || '',
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'id' })
+
     const { data: resume, error } = await db
       .from('resumes')
       .insert([
